@@ -1,6 +1,5 @@
 import { LogsWithTasks } from '@flowmo/types';
 import { convertMarkdownToText } from '@flowmo/utils/markdown';
-import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useLogs } from '../hooks/useStats';
 

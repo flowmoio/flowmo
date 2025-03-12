@@ -1,3 +1,4 @@
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { convertMarkdownToText } from '@flowmo/utils/markdown';
 import { useNavigation } from '@react-navigation/native';
 import { useLocalSearchParams } from 'expo-router';
@@ -11,7 +12,6 @@ import {
   View,
 } from 'react-native';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
-import { Up } from '@/src/components/Icons';
 import { Pressable, Text } from '@/src/components/Themed';
 import {
   useIsLoadingTasks,
@@ -134,7 +134,7 @@ export default function TasksScreen() {
           }}
           disabled={!newTaskName.trim()}
         >
-          <Up />
+          <FontAwesome6 name="arrow-up" size={18} color="#131221" />
         </Pressable>
       </View>
     </KeyboardAvoidingView>

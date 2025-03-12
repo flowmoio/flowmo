@@ -1,7 +1,9 @@
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { Tabs } from 'expo-router';
 import { useEffect } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Profile, Stats, Tasks, Timer } from '@/src/components/Icons';
+import { Profile } from '@/src/components/Icons';
 import { useTasksActions } from '@/src/hooks/useTasks';
 import useTick from '@/src/hooks/useTick';
 import { hapticsImpact } from '@/src/utils';
@@ -41,21 +43,27 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Timer',
-          tabBarIcon: ({ color }) => <Timer fill={color} />,
+          tabBarIcon: ({ color }) => (
+            <FontAwesome6 name="stopwatch" size={24} color={color} />
+          ),
         }}
       />
       <Tabs.Screen
         name="tasks"
         options={{
           title: 'Tasks',
-          tabBarIcon: ({ color }) => <Tasks fill={color} />,
+          tabBarIcon: ({ color }) => (
+            <FontAwesome5 name="tasks" size={22} color={color} />
+          ),
         }}
       />
       <Tabs.Screen
         name="stats"
         options={{
           title: 'Stats',
-          tabBarIcon: ({ color }) => <Stats fill={color} />,
+          tabBarIcon: ({ color }) => (
+            <FontAwesome6 name="chart-simple" size={24} color={color} />
+          ),
         }}
       />
       <Tabs.Screen

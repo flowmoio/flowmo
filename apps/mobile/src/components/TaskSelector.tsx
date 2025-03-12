@@ -1,6 +1,6 @@
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { convertMarkdownToText } from '@flowmo/utils/markdown';
 import { Pressable as NativePressable, StyleSheet, View } from 'react-native';
-import { AngleRight } from '@/src/components/Icons';
 import { Text } from '@/src/components/Themed';
 import { useBottomSheet } from '@/src/context/BottomSheetContext';
 import { useFocusingTask } from '../hooks/useTasks';
@@ -45,8 +45,10 @@ export default function TaskSelector() {
             ? convertMarkdownToText(focusingTask.name)
             : 'Select a task'}
         </Text>
-        <AngleRight
-          fill={focusingTask && status !== 'running' ? '#FFFFFF' : '#FFFFFFA0'}
+        <FontAwesome6
+          name="angle-right"
+          size={20}
+          color={focusingTask && status !== 'running' ? '#FFFFFF' : '#FFFFFFA0'}
         />
       </View>
     </NativePressable>

@@ -1,10 +1,10 @@
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Platform, View } from 'react-native';
 import * as DropdownMenu from 'zeego/dropdown-menu';
-import { Email, Google } from '@/src/components/Icons';
 import { Pressable, Text } from '@/src/components/Themed';
 import { useSession } from '@/src/ctx';
 
@@ -73,7 +73,7 @@ export default function Auth() {
             }
           }}
         >
-          <Google />
+          <FontAwesome6 name="google" size={12} color="black" />
           <Text style={{ fontSize: 15.5, fontWeight: '500', color: '#000000' }}>
             Continue with Google
           </Text>
@@ -91,7 +91,7 @@ export default function Auth() {
             }}
           >
             <Pressable scaleValue={0.98}>
-              <Email />
+              <FontAwesome6 name="envelope" size={16} color="black" />
               <Text
                 style={{ fontSize: 15.5, fontWeight: '500', color: '#000000' }}
               >

@@ -1,15 +1,22 @@
 import BottomSheet from '@gorhom/bottom-sheet';
-import React, { createContext, useContext, useRef } from 'react';
+import {
+  FC,
+  PropsWithChildren,
+  RefObject,
+  createContext,
+  useContext,
+  useRef,
+} from 'react';
 
 type BottomSheetContextType = {
-  bottomSheetRef: React.RefObject<BottomSheet>;
+  bottomSheetRef: RefObject<BottomSheet>;
 };
 
 const BottomSheetContext = createContext<BottomSheetContextType | undefined>(
   undefined,
 );
 
-export const BottomSheetProvider: React.FC<React.PropsWithChildren<{}>> = ({
+export const BottomSheetProvider: FC<PropsWithChildren<{}>> = ({
   children,
 }) => {
   const bottomSheetRef = useRef<BottomSheet>(null);

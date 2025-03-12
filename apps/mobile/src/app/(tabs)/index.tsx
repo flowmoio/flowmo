@@ -1,7 +1,7 @@
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { useState } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
-import { Pause, Play, Stop } from '@/src/components/Icons';
 import TaskSelector from '@/src/components/TaskSelector';
 import { Pressable, Text } from '@/src/components/Themed';
 import { useActiveSource, useFocusingTask } from '@/src/hooks/useTasks';
@@ -70,7 +70,11 @@ export default function TimerTab() {
                   setIsLoading(false);
                 }}
               >
-                {status === 'running' ? <Pause /> : <Play />}
+                {status === 'running' ? (
+                  <FontAwesome6 name="pause" size={22} color="white" />
+                ) : (
+                  <FontAwesome6 name="play" size={22} color="white" />
+                )}
               </Pressable>
             )}
           <Pressable
@@ -89,7 +93,11 @@ export default function TimerTab() {
               setIsLoading(false);
             }}
           >
-            {status === 'idle' ? <Play /> : <Stop />}
+            {status === 'idle' ? (
+              <FontAwesome6 name="play" size={22} color="white" />
+            ) : (
+              <FontAwesome6 name="stop" size={22} color="white" />
+            )}
           </Pressable>
         </View>
       </View>

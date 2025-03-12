@@ -1,6 +1,6 @@
 import { usePathname, useRouter } from 'expo-router';
 import { Stack } from 'expo-router/stack';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { ActivityIndicator, Pressable, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SessionProvider, useSession } from '@/src/ctx';
