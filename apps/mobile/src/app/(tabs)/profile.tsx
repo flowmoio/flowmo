@@ -1,13 +1,10 @@
-import { useState } from 'react';
-import { Alert, StyleSheet, View } from 'react-native';
+import { Alert, Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Pressable, Text } from '@/src/components/Themed';
+import { Text } from '@/src/components/Themed';
 import { useSession } from '@/src/ctx';
 
 export default function Profile() {
   const { session, signOut, deleteAccount } = useSession();
-  const [isLoading, setIsLoading] = useState(false);
-
   const insets = useSafeAreaInsets();
 
   const handleDeleteAccount = async () => {
@@ -24,97 +21,91 @@ export default function Profile() {
         flex: 1,
         height: '100%',
         backgroundColor: '#131221',
-        alignItems: 'center',
         paddingTop: insets.top + 10,
         paddingHorizontal: 20,
-        gap: 20,
+        flexDirection: 'column',
       }}
     >
-      <View
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 20,
-          maxWidth: 500,
+      <Text
+        style={[
+          styles.sectionTitle,
+          {
+            paddingBottom: 10,
+          },
+        ]}
+      >
+        Profile
+      </Text>
+      <View style={styles.sectionItem}>
+        <Text
+          style={[
+            styles.text,
+            {
+              fontWeight: 500,
+            },
+          ]}
+        >
+          Email
+        </Text>
+        <Text style={styles.text}>{session?.user.email}</Text>
+      </View>
+      <Pressable
+        style={styles.sectionItem}
+        onPress={async () => {
+          const error = await signOut();
+
+          if (error) {
+            Alert.alert(error.message);
+          }
         }}
       >
-        <Text style={styles.sectionTitle}>Account</Text>
-        <View style={styles.sectionItem}>
-          <Text style={styles.text}>Email</Text>
-          <Text style={styles.text}>{session?.user.email}</Text>
-        </View>
-        <Pressable
-          isLoading={isLoading}
-          color="#FFFFFF"
-          style={{
-            backgroundColor: '#23223C',
-            borderColor: '#23223C',
-            borderWidth: 2,
-          }}
-          onPress={async () => {
-            setIsLoading(true);
-            const error = await signOut();
-
-            if (error) {
-              Alert.alert(error.message);
-            }
-            setIsLoading(false);
-          }}
+        <Text
+          style={[
+            styles.text,
+            {
+              fontWeight: 500,
+            },
+          ]}
         >
-          <Text
-            style={[
-              styles.text,
+          Sign out
+        </Text>
+      </Pressable>
+      <Pressable
+        style={styles.sectionItem}
+        onPress={() => {
+          Alert.alert(
+            'Delete Account',
+            'Are you sure you want to delete your account? All your data will be permanently deleted.',
+            [
+              { text: 'Cancel', style: 'cancel' },
               {
-                textAlign: 'center',
-                color: '#FFFFFF',
+                text: 'Delete',
+                onPress: handleDeleteAccount,
+                style: 'destructive',
               },
-            ]}
-          >
-            Sign out
-          </Text>
-        </Pressable>
-        <Pressable
-          color="#FF4F4F"
-          style={{
-            backgroundColor: '#23223C',
-            borderColor: '#23223C',
-            borderWidth: 2,
-          }}
-          onPress={() => {
-            Alert.alert(
-              'Delete Account',
-              'Are you sure you want to delete your account? All your data will be permanently deleted.',
-              [
-                { text: 'Cancel', style: 'cancel' },
-                {
-                  text: 'Delete',
-                  onPress: handleDeleteAccount,
-                  style: 'destructive',
-                },
-              ],
-            );
-          }}
+            ],
+          );
+        }}
+      >
+        <Text
+          style={[
+            styles.text,
+            {
+              fontWeight: 500,
+              color: '#FF4F4F',
+            },
+          ]}
         >
-          <Text
-            style={[
-              styles.text,
-              {
-                textAlign: 'center',
-                color: '#FF4F4F',
-              },
-            ]}
-          >
-            Delete account
-          </Text>
-        </Pressable>
-      </View>
+          Delete account
+        </Text>
+      </Pressable>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   sectionTitle: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
   },
   sectionItem: {
@@ -122,10 +113,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    borderBottomWidth: 1,
+    paddingVertical: 16,
+    borderBlockColor: '#23223C',
     width: '100%',
-    backgroundColor: '#23223C',
-    padding: 20,
-    borderRadius: 10,
   },
   text: {
     fontSize: 16,
