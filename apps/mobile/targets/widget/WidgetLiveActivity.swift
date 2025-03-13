@@ -2,13 +2,6 @@ import ActivityKit
 import WidgetKit
 import SwiftUI
 
-struct WidgetAttributes: ActivityAttributes {
-    public struct ContentState: Codable, Hashable {
-        var time: String
-        var mode: String
-    }
-}
-
 struct WidgetLiveActivity: Widget {
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: WidgetAttributes.self) { context in
