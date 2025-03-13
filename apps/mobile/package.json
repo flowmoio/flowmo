@@ -8,6 +8,7 @@
     "ios": "expo run:ios"
   },
   "dependencies": {
+    "@bacons/apple-targets": "^0.2.1",
     "@expo/vector-icons": "^14.0.4",
     "@flowmo/stores": "workspace:*",
     "@flowmo/task-sources": "workspace:*",
