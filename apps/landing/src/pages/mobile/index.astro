@@ -3,31 +3,36 @@ import { Image } from 'astro:assets';
 import heroImage from '../../images/hero.png';
 
 import NavbarLayout from '../../layouts/NavbarLayout.astro';
-import { IOS, Android } from '../../components/Icons.tsx';
+import { IOS, GooglePlay } from '../../components/Icons.tsx';
 ---
 
 <NavbarLayout
-  title="Downloads | Flowmo"
-  description="Download Flowmo mobile app"
+  title="Flowmo for iOS and Android"
+  description="Flowmo is available on iOS and Android."
 >
   <div class="my-32 flex w-full flex-col items-center justify-center gap-10">
-    <h1 class="text-3xl font-bold">Use Flowmo on mobile</h1>
+    <h1 class="text-center text-5xl font-bold sm:text-6xl">
+      Focus with the <br /> Flowmo app
+    </h1>
+    <div class="text-center text-xl text-gray-300">
+      Same workflows in compact form.<br />Available for iOS and Android.
+    </div>
     <div class="flex items-center gap-5">
       <a
         target="_blank"
         href="https://apps.apple.com/app/flowmo-flowmodoro-timer/id6670529689"
-        class="flex items-end gap-2 rounded-lg bg-secondary p-4 transition-colors hover:bg-primary hover:text-background"
+        class="flex items-center gap-2 rounded-lg bg-primary px-4 py-3 font-medium text-black transition-all hover:brightness-90"
       >
         <IOS />
-        iOS & iPadOS
+        App Store
       </a>
       <a
         target="_blank"
         href="https://play.google.com/store/apps/details?id=com.m4xshen.mobile"
-        class="flex items-center gap-2 rounded-lg bg-secondary p-4 transition-colors hover:bg-primary hover:text-background"
+        class="flex items-center gap-2 rounded-lg bg-primary px-4 py-3 font-medium text-black transition-all hover:brightness-90"
       >
-        <Android />
-        Android
+        <GooglePlay />
+        Google Play
       </a>
     </div>
     <Image
