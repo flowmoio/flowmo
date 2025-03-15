@@ -6,7 +6,7 @@ struct WidgetLiveActivity: Widget {
   var body: some WidgetConfiguration {
     ActivityConfiguration(for: WidgetAttributes.self) { context in
       VStack {
-        Text(context.state.time)
+        TimeDisplayView(context: context)
           .font(.largeTitle)
           .fontWeight(.bold)
         Text(context.state.mode)
@@ -18,7 +18,7 @@ struct WidgetLiveActivity: Widget {
       DynamicIsland {
         DynamicIslandExpandedRegion(.bottom) {
           VStack {
-            Text(context.state.time)
+            TimeDisplayView(context: context)
               .font(.largeTitle)
               .fontWeight(.bold)
             Text(context.state.mode)
@@ -31,11 +31,32 @@ struct WidgetLiveActivity: Widget {
         Text(context.state.mode)
           .fontWeight(.medium)
       } compactTrailing: {
-        Text(context.state.time)
+        TimeDisplayView(context: context)
           .fontWeight(.medium)
       } minimal: {
         Image("Logo")
       }
+    }
+  }
+}
+
+struct TimeDisplayView: View {
+  let context: ActivityViewContext<WidgetAttributes>
+
+  var body: some View {
+    if context.state.status == "idle" {
+      Text("00:00")
+        .monospacedDigit()
+        .multilineTextAlignment(.center)
+    } else {
+      Text(
+        Date(
+          timeIntervalSinceNow: context.state.getTimeIntervalSinceNow()
+        ),
+        style: .timer
+      )
+      .monospacedDigit()
+      .multilineTextAlignment(.center)
     }
   }
 }
@@ -48,11 +69,36 @@ extension WidgetAttributes {
 
 extension WidgetAttributes.ContentState {
   fileprivate static var focus: WidgetAttributes.ContentState {
-    WidgetAttributes.ContentState(time: "25:00", mode: "Focus")
+    let now = Int(Date().timeIntervalSince1970 * 1000)
+    return WidgetAttributes.ContentState(
+      status: "running",
+      mode: "focus",
+      totalTime: 0,
+      startTime: now,
+      endTime: now + 1500000
+    )
   }
   
   fileprivate static var breakMode: WidgetAttributes.ContentState {
-    WidgetAttributes.ContentState(time: "15:30", mode: "Break")
+    let now = Int(Date().timeIntervalSince1970 * 1000)
+    return WidgetAttributes.ContentState(
+      status: "running",
+      mode: "break",
+      totalTime: 1500000,
+      startTime: now,
+      endTime: now + 900000
+    )
+  }
+
+  fileprivate static var idleFocus: WidgetAttributes.ContentState {
+    let now = Int(Date().timeIntervalSince1970 * 1000)
+    return WidgetAttributes.ContentState(
+      status: "idle",
+      mode: "focus",
+      totalTime: 0,
+      startTime: now,
+      endTime: 0
+    )
   }
 }
 
@@ -61,6 +107,7 @@ extension WidgetAttributes.ContentState {
 } contentStates: {
   WidgetAttributes.ContentState.focus
   WidgetAttributes.ContentState.breakMode
+  WidgetAttributes.ContentState.idleFocus
 }
 
 #Preview("Dynamic Island", as: .dynamicIsland(.expanded), using: WidgetAttributes.preview) {
@@ -68,6 +115,7 @@ extension WidgetAttributes.ContentState {
 } contentStates: {
   WidgetAttributes.ContentState.focus
   WidgetAttributes.ContentState.breakMode
+  WidgetAttributes.ContentState.idleFocus
 }
 
 #Preview("Dynamic Island Compact", as: .dynamicIsland(.compact), using: WidgetAttributes.preview) {
@@ -75,6 +123,7 @@ extension WidgetAttributes.ContentState {
 } contentStates: {
   WidgetAttributes.ContentState.focus
   WidgetAttributes.ContentState.breakMode
+  WidgetAttributes.ContentState.idleFocus
 }
 
 #Preview("Dynamic Island Minimal", as: .dynamicIsland(.minimal), using: WidgetAttributes.preview) {
@@ -82,4 +131,5 @@ extension WidgetAttributes.ContentState {
 } contentStates: {
   WidgetAttributes.ContentState.focus
   WidgetAttributes.ContentState.breakMode
+  WidgetAttributes.ContentState.idleFocus
 }
