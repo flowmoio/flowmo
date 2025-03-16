@@ -6,29 +6,32 @@ struct WidgetLiveActivity: Widget {
   var body: some WidgetConfiguration {
     ActivityConfiguration(for: WidgetAttributes.self) { context in
       VStack {
+        HStack {
+          Image("Logo")
+          Text(context.state.mode.prefix(1).uppercased() + context.state.mode.dropFirst())
+            .font(.headline)
+            .fontWeight(.bold)
+        }
         TimerView(state: context.state)
           .font(.largeTitle)
           .fontWeight(.bold)
-        Text(context.state.mode.prefix(1).uppercased() + context.state.mode.dropFirst())
-          .font(.headline)
-          .fontWeight(.medium)
       }
       .padding()
+      .activityBackgroundTint(Color(red: 19/255, green: 18/255, blue: 33/255).opacity(0.9))
     } dynamicIsland: { context in
       DynamicIsland {
         DynamicIslandExpandedRegion(.bottom) {
           VStack {
+            Text(context.state.mode.prefix(1).uppercased() + context.state.mode.dropFirst())
+              .font(.headline)
+              .fontWeight(.bold)
             TimerView(state: context.state)
               .font(.largeTitle)
               .fontWeight(.bold)
-            Text(context.state.mode.prefix(1).uppercased() + context.state.mode.dropFirst())
-              .font(.headline)
-              .fontWeight(.medium)
           }
         }
       } compactLeading: {
-        Text(context.state.mode.prefix(1).uppercased() + context.state.mode.dropFirst())
-          .fontWeight(.medium)
+        Image("Logo")
       } compactTrailing: {
         TimerView(state: context.state)
           .fontWeight(.medium)
