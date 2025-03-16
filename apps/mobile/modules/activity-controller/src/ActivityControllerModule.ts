@@ -8,12 +8,19 @@ export const startLiveActivity: types.StartLiveActivityFn = async (params) => {
   return nativeModule.startLiveActivity(stringParams);
 };
 
+export const updateLiveActivity: types.UpdateLiveActivityFn = async (
+  params,
+) => {
+  const stringParams = JSON.stringify(params);
+  return nativeModule.updateLiveActivity(stringParams);
+};
+
 export const stopLiveActivity: types.StopLiveActivityFn = async () => {
   return nativeModule.stopLiveActivity();
 };
 
-export const isLiveActivityRunning: types.IsLiveActivityRunningFn = () => {
-  return nativeModule.isLiveActivityRunning();
+export const isActivityRunning: types.IsActivityRunningFn = () => {
+  return nativeModule.isActivityRunning();
 };
 
 export const areLiveActivitiesEnabled: boolean =

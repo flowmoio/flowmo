@@ -37,8 +37,11 @@ final class ActivityDataException: GenericException<String> {
 // MARK: Types
 
 struct StartActivityArgs: Codable {
-  let time: String
+  let status: String
   let mode: String
+  let totalTime: Int
+  let startTime: Int
+  let endTime: Int
 
   public static func fromJSON(rawData: String) -> Self? {
     let decoder = JSONDecoder()
@@ -130,7 +133,7 @@ public class ActivityControllerModule: Module {
       do {
         let activityAttrs = WidgetAttributes()
         let activityState = WidgetAttributes.WidgetState(
-          time: args.time, mode: args.mode
+          status: args.status, mode: args.mode, totalTime: args.totalTime, startTime: args.startTime, endTime: args.endTime
         )
 
         let activity = try Activity.request(
@@ -144,6 +147,38 @@ public class ActivityControllerModule: Module {
       } catch let error {
         print(error.localizedDescription)
         throw ActivityFailedToStartException(())
+      }
+    }
+
+    AsyncFunction("updateLiveActivity") {
+      (
+        rawData: String,
+        promise: Promise
+      ) in
+      guard #available(iOS 16.2, *) else {
+        throw ActivityUnavailableException(())
+      }
+
+      guard let args = StartActivityArgs.fromJSON(rawData: rawData) else {
+        throw ActivityDataException(rawData)
+      }
+
+      guard let activity = (getCurrentActivity() as? DefinedActivityWrapper)?.getActivity() else {
+        throw ActivityNotStartedException(())
+      }
+
+      log.debug("Updating activity \(activity.id)")
+
+      let activityState = WidgetAttributes.WidgetState(
+        status: args.status, mode: args.mode, totalTime: args.totalTime, startTime: args.startTime, endTime: args.endTime
+      )
+
+      Task {
+        await activity.update(
+          ActivityContent<WidgetAttributes.WidgetState>(state: activityState, staleDate: nil)
+        )
+        log.debug("Updated activity \(activity.id)")
+        return promise.resolve()
       }
     }
 

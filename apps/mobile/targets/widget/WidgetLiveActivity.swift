@@ -6,10 +6,10 @@ struct WidgetLiveActivity: Widget {
   var body: some WidgetConfiguration {
     ActivityConfiguration(for: WidgetAttributes.self) { context in
       VStack {
-        TimeDisplayView(context: context)
+        TimerView(state: context.state)
           .font(.largeTitle)
           .fontWeight(.bold)
-        Text(context.state.mode)
+        Text(context.state.mode.prefix(1).uppercased() + context.state.mode.dropFirst())
           .font(.headline)
           .fontWeight(.medium)
       }
@@ -18,42 +18,62 @@ struct WidgetLiveActivity: Widget {
       DynamicIsland {
         DynamicIslandExpandedRegion(.bottom) {
           VStack {
-            TimeDisplayView(context: context)
+            TimerView(state: context.state)
               .font(.largeTitle)
               .fontWeight(.bold)
-            Text(context.state.mode)
+            Text(context.state.mode.prefix(1).uppercased() + context.state.mode.dropFirst())
               .font(.headline)
               .fontWeight(.medium)
           }
-          .background(Color.black)
         }
       } compactLeading: {
-        Text(context.state.mode)
+        Text(context.state.mode.prefix(1).uppercased() + context.state.mode.dropFirst())
           .fontWeight(.medium)
       } compactTrailing: {
-        TimeDisplayView(context: context)
+        TimerView(state: context.state)
           .fontWeight(.medium)
+          .frame(maxWidth: 56)
       } minimal: {
         Image("Logo")
       }
+      .contentMargins(.leading, 12, for: .compactLeading)
+      .contentMargins(.trailing, 4, for: .compactTrailing)
     }
   }
 }
 
-struct TimeDisplayView: View {
-  let context: ActivityViewContext<WidgetAttributes>
-
+struct TimerView: View {
+  let state: WidgetAttributes.ContentState
+  
   var body: some View {
-    if context.state.status == "idle" {
-      Text("00:00")
-        .monospacedDigit()
-        .multilineTextAlignment(.center)
-    } else {
-      Text(
-        Date(
-          timeIntervalSinceNow: context.state.getTimeIntervalSinceNow()
-        ),
-        style: .timer
+    let now = Date()
+    let baseDate = Date(timeIntervalSince1970: 0)
+    let totalTimeDate = baseDate.addingTimeInterval(Double(state.totalTime) / 1000.0)
+    let startDate = Date(timeIntervalSince1970: Double(state.startTime) / 1000.0)
+    let endDate = Date(timeIntervalSince1970: Double(state.endTime) / 1000.0)
+    
+    switch (state.mode, state.status) {
+    case ("focus", "running"):
+      let adjustedStartDate = startDate.addingTimeInterval(-Double(state.totalTime) / 1000.0)
+      return Text(
+        timerInterval: adjustedStartDate...(now.addingTimeInterval(100 * 3600)),
+        countsDown: false
+      )
+      .monospacedDigit()
+      .multilineTextAlignment(.center)
+      
+    case ("break", "running"):
+      return Text(
+        timerInterval: startDate...endDate,
+        countsDown: true
+      )
+      .monospacedDigit()
+      .multilineTextAlignment(.center)
+      
+    default:
+      return Text(
+        timerInterval: baseDate...totalTimeDate,
+        countsDown: false
       )
       .monospacedDigit()
       .multilineTextAlignment(.center)
@@ -68,36 +88,56 @@ extension WidgetAttributes {
 }
 
 extension WidgetAttributes.ContentState {
-  fileprivate static var focus: WidgetAttributes.ContentState {
+  fileprivate static var focusIdle: WidgetAttributes.ContentState {
+    return WidgetAttributes.ContentState(
+      status: "idle",
+      mode: "focus",
+      totalTime: 0,
+      startTime: 0,
+      endTime: 0
+    )
+  }
+  
+  fileprivate static var focusRunning: WidgetAttributes.ContentState {
     let now = Int(Date().timeIntervalSince1970 * 1000)
     return WidgetAttributes.ContentState(
       status: "running",
       mode: "focus",
-      totalTime: 0,
+      totalTime: 60000,
       startTime: now,
-      endTime: now + 1500000
+      endTime: 0
     )
   }
   
-  fileprivate static var breakMode: WidgetAttributes.ContentState {
+  fileprivate static var focusPaused: WidgetAttributes.ContentState {
+    let now = Int(Date().timeIntervalSince1970 * 1000)
+    return WidgetAttributes.ContentState(
+      status: "paused",
+      mode: "focus",
+      totalTime: 3600000,
+      startTime: now,
+      endTime: 0
+    )
+  }
+  
+  fileprivate static var breakIdle: WidgetAttributes.ContentState {
+    return WidgetAttributes.ContentState(
+      status: "idle",
+      mode: "break",
+      totalTime: 2521,
+      startTime: 0,
+      endTime: 0
+    )
+  }
+  
+  fileprivate static var breakRunning: WidgetAttributes.ContentState {
     let now = Int(Date().timeIntervalSince1970 * 1000)
     return WidgetAttributes.ContentState(
       status: "running",
       mode: "break",
       totalTime: 1500000,
       startTime: now,
-      endTime: now + 900000
-    )
-  }
-
-  fileprivate static var idleFocus: WidgetAttributes.ContentState {
-    let now = Int(Date().timeIntervalSince1970 * 1000)
-    return WidgetAttributes.ContentState(
-      status: "idle",
-      mode: "focus",
-      totalTime: 0,
-      startTime: now,
-      endTime: 0
+      endTime: now + 9000
     )
   }
 }
@@ -105,31 +145,39 @@ extension WidgetAttributes.ContentState {
 #Preview("Live Activity", as: .content, using: WidgetAttributes.preview) {
   WidgetLiveActivity()
 } contentStates: {
-  WidgetAttributes.ContentState.focus
-  WidgetAttributes.ContentState.breakMode
-  WidgetAttributes.ContentState.idleFocus
+  WidgetAttributes.ContentState.focusIdle
+  WidgetAttributes.ContentState.focusRunning
+  WidgetAttributes.ContentState.focusPaused
+  WidgetAttributes.ContentState.breakIdle
+  WidgetAttributes.ContentState.breakRunning
 }
 
 #Preview("Dynamic Island", as: .dynamicIsland(.expanded), using: WidgetAttributes.preview) {
   WidgetLiveActivity()
 } contentStates: {
-  WidgetAttributes.ContentState.focus
-  WidgetAttributes.ContentState.breakMode
-  WidgetAttributes.ContentState.idleFocus
+  WidgetAttributes.ContentState.focusIdle
+  WidgetAttributes.ContentState.focusRunning
+  WidgetAttributes.ContentState.focusPaused
+  WidgetAttributes.ContentState.breakIdle
+  WidgetAttributes.ContentState.breakRunning
 }
 
 #Preview("Dynamic Island Compact", as: .dynamicIsland(.compact), using: WidgetAttributes.preview) {
   WidgetLiveActivity()
 } contentStates: {
-  WidgetAttributes.ContentState.focus
-  WidgetAttributes.ContentState.breakMode
-  WidgetAttributes.ContentState.idleFocus
+  WidgetAttributes.ContentState.focusIdle
+  WidgetAttributes.ContentState.focusRunning
+  WidgetAttributes.ContentState.focusPaused
+  WidgetAttributes.ContentState.breakIdle
+  WidgetAttributes.ContentState.breakRunning
 }
 
 #Preview("Dynamic Island Minimal", as: .dynamicIsland(.minimal), using: WidgetAttributes.preview) {
   WidgetLiveActivity()
 } contentStates: {
-  WidgetAttributes.ContentState.focus
-  WidgetAttributes.ContentState.breakMode
-  WidgetAttributes.ContentState.idleFocus
+  WidgetAttributes.ContentState.focusIdle
+  WidgetAttributes.ContentState.focusRunning
+  WidgetAttributes.ContentState.focusPaused
+  WidgetAttributes.ContentState.breakIdle
+  WidgetAttributes.ContentState.breakRunning
 }

@@ -1,12 +1,19 @@
 export type LiveActivityParams = {
-  time: string;
+  status: string;
   mode: string;
+  totalTime: number;
+  startTime: number;
+  endTime: number;
 };
 
 export type StartLiveActivityFn = (
   params: LiveActivityParams,
 ) => Promise<{ activityId: string }>;
 
+export type UpdateLiveActivityFn = (
+  params: LiveActivityParams,
+) => Promise<void>;
+
 export type StopLiveActivityFn = () => Promise<void>;
 
-export type IsLiveActivityRunningFn = () => boolean;
+export type IsActivityRunningFn = () => boolean;

@@ -7,8 +7,8 @@ import { createStore as createStatsStore } from './stats';
 type OnBreakStart = (totalTime: number) => Promise<void>;
 
 interface State {
-  startTime: number | null;
-  endTime: number | null;
+  startTime: number;
+  endTime: number;
   totalTime: number;
   displayTime: number;
   mode: 'focus' | 'break';
@@ -64,8 +64,8 @@ export const createStore = (
   onBreakStart?: OnBreakStart,
 ) =>
   create<Store>((set, get) => ({
-    startTime: null,
-    endTime: null,
+    startTime: 0,
+    endTime: 0,
     totalTime: 0,
     displayTime: 0,
     mode: 'focus',
@@ -92,7 +92,7 @@ export const createStore = (
         const breakRatio = await getBreakRatio(supabase);
 
         if (get().status === 'paused') {
-          const totalTime = get().totalTime / breakRatio;
+          const totalTime = Math.round(get().totalTime / breakRatio);
           set((state) => ({
             totalTime,
             displayTime: Math.floor(totalTime / 1000),
@@ -108,7 +108,9 @@ export const createStore = (
         set((state) => {
           const totalTime =
             state.mode === 'focus'
-              ? (state.totalTime + Date.now() - state.startTime!) / breakRatio
+              ? Math.round(
+                  (state.totalTime + Date.now() - state.startTime) / breakRatio,
+                )
               : 0;
           return {
             endTime: Date.now(),
@@ -125,7 +127,7 @@ export const createStore = (
         }
 
         set((state) => {
-          const totalTime = state.totalTime + Date.now() - state.startTime!;
+          const totalTime = state.totalTime + Date.now() - state.startTime;
           return {
             status: 'paused',
             totalTime,
@@ -147,7 +149,7 @@ export const createStore = (
           return;
         }
 
-        const start_time = new Date(get().startTime!).toISOString();
+        const start_time = new Date(get().startTime).toISOString();
         const end_time = new Date(Date.now()).toISOString();
 
         if (!focusingTask) {
@@ -182,8 +184,8 @@ export const createStore = (
 
           const time =
             state.mode === 'focus'
-              ? state.totalTime + Date.now() - state.startTime!
-              : state.endTime! - Date.now();
+              ? state.totalTime + Date.now() - state.startTime
+              : state.endTime - Date.now();
 
           if (state.mode === 'break' && time <= 0) {
             state.actions.stop();

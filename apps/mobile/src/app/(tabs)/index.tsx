@@ -1,20 +1,29 @@
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import {
+  isActivityRunning,
+  startLiveActivity,
+  updateLiveActivity,
+} from '@/modules/activity-controller';
 import TaskSelector from '@/src/components/TaskSelector';
 import { Pressable, Text } from '@/src/components/Themed';
 import { useActiveSource, useFocusingTask } from '@/src/hooks/useTasks';
 import {
   useActions,
   useDisplayTime,
+  useEndTime,
   useMode,
+  useStartTime,
   useStatus,
   useTotalTime,
 } from '@/src/hooks/useTimer';
 import { formatTime } from '@/src/utils';
 
 export default function TimerTab() {
+  const startTime = useStartTime();
+  const endTime = useEndTime();
   const totalTime = useTotalTime();
   const displayTime = useDisplayTime();
   const mode = useMode();
@@ -24,6 +33,34 @@ export default function TimerTab() {
 
   const focusingTask = useFocusingTask();
   const activeSource = useActiveSource();
+  const liveActivityRunning = isActivityRunning();
+  const firstRender = useRef(true);
+
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+
+    if (liveActivityRunning) {
+      updateLiveActivity({
+        status,
+        mode,
+        totalTime,
+        startTime,
+        endTime,
+      });
+      return;
+    }
+
+    startLiveActivity({
+      status,
+      mode,
+      totalTime,
+      startTime,
+      endTime,
+    });
+  }, [status, mode, totalTime, startTime, endTime]);
 
   return (
     <>
@@ -34,7 +71,7 @@ export default function TimerTab() {
           fill={
             mode === 'focus'
               ? 0
-              : 100 * (displayTime / Math.floor(totalTime! / 1000))
+              : 100 * (displayTime / Math.floor(totalTime / 1000))
           }
           rotation={0}
           tintColor="#DBBFFF"
