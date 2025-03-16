@@ -37,6 +37,10 @@ export default function TimerTab() {
   const firstRender = useRef(true);
 
   useEffect(() => {
+    if (Platform.OS !== 'ios') {
+      return;
+    }
+
     if (firstRender.current) {
       firstRender.current = false;
       return;
