@@ -12,7 +12,10 @@
     "ios": {
       "supportsTablet": true,
       "usesAppleSignIn": true,
-      "bundleIdentifier": "com.m4xshen.mobile"
+      "bundleIdentifier": "com.m4xshen.mobile",
+      "infoPlist": {
+        "NSSupportsLiveActivities": true
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -47,12 +50,14 @@
         "expo-notifications",
         {
           "sounds": [
+            "./assets/alarm.wav",
             "./assets/alarm.wav"
           ]
         }
       ],
       "./plugins/notifee-mod.js",
-      "expo-font"
+      "expo-font",
+      "@bacons/apple-targets"
     ],
     "experiments": {
       "typedRoutes": true

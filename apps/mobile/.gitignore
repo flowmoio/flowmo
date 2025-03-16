@@ -41,4 +41,5 @@ expo-env.d.ts
 # @end expo-cli
 
 ios/
+!modules/activity-controller/ios
 android/
