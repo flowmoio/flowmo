@@ -37,7 +37,8 @@ export default function TasksScreen() {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      keyboardVerticalOffset={100}
       style={{ flex: 1, backgroundColor: '#131221', paddingHorizontal: 20 }}
     >
       {isLoadingTasks ? (
