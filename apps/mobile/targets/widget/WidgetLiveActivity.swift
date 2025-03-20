@@ -5,39 +5,36 @@ import SwiftUI
 struct WidgetLiveActivity: Widget {
   var body: some WidgetConfiguration {
     ActivityConfiguration(for: WidgetAttributes.self) { context in
-      VStack {
-        HStack {
-          Image("Logo")
-          Text(context.state.mode.prefix(1).uppercased() + context.state.mode.dropFirst())
-            .font(.headline)
-            .fontWeight(.bold)
-        }
-        TimerView(state: context.state)
-          .font(.largeTitle)
-          .fontWeight(.bold)
-      }
-      .padding()
-      .activityBackgroundTint(Color(red: 19/255, green: 18/255, blue: 33/255).opacity(0.9))
+      LiveActivityContentView(context: context)
     } dynamicIsland: { context in
       DynamicIsland {
         DynamicIslandExpandedRegion(.bottom) {
           VStack {
-            Text(context.state.mode.prefix(1).uppercased() + context.state.mode.dropFirst())
-              .font(.headline)
-              .fontWeight(.bold)
+            HStack {
+              Image("LogoNoBg")
+                .resizable()
+                .frame(width: 20, height: 20)
+              Text(context.state.mode.prefix(1).uppercased() + context.state.mode.dropFirst())
+                .font(.headline)
+                .fontWeight(.bold)
+            }
             TimerView(state: context.state)
               .font(.largeTitle)
               .fontWeight(.bold)
           }
         }
       } compactLeading: {
-        Image("Logo")
+        Image("LogoNoBg")
+          .resizable()
+          .frame(width: 20, height: 20)
       } compactTrailing: {
         TimerView(state: context.state)
           .fontWeight(.medium)
           .frame(maxWidth: 56)
       } minimal: {
-        Image("Logo")
+        Image("LogoNoBg")
+          .resizable()
+          .frame(width: 20, height: 20)
       }
       .contentMargins(.leading, 12, for: .compactLeading)
       .contentMargins(.trailing, 4, for: .compactTrailing)
@@ -142,6 +139,28 @@ extension WidgetAttributes.ContentState {
       startTime: now,
       endTime: now + 9000
     )
+  }
+}
+
+struct LiveActivityContentView: View {
+  let context: ActivityViewContext<WidgetAttributes>
+  @Environment(\.colorScheme) var colorScheme
+  var body: some View {
+    VStack {
+      HStack {
+        Image("Logo")
+          .resizable()
+          .frame(width: 25, height: 25)
+        Text(context.state.mode.prefix(1).uppercased() + context.state.mode.dropFirst())
+          .font(.headline)
+          .fontWeight(.bold)
+      }
+      TimerView(state: context.state)
+        .font(.largeTitle)
+        .fontWeight(.bold)
+    }
+    .padding()
+    .activityBackgroundTint(colorScheme == .light ? .white.opacity(0.43) : .black.opacity(0.43))
   }
 }
 
