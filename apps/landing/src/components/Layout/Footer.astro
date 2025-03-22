@@ -1,5 +1,5 @@
 ---
-import { X, Bluesky, GitHub, Mail } from '../Icons';
+import { X, Bluesky, Mastodon, GitHub, Mail } from '../Icons';
 import { Image } from 'astro:assets';
 import logoNoBg from '../../images/logo-no-bg.png';
 ---
@@ -35,6 +35,13 @@ import logoNoBg from '../../images/logo-no-bg.png';
         aria-label="Bluesky"
       >
         <Bluesky />
+      </a>
+      <a
+        href="https://mastodon.social/@flowmoio"
+        class="cursor-pointer fill-[#ffffff70] transition-all hover:fill-[#ffffff]"
+        aria-label="Mastodon"
+      >
+        <Mastodon />
       </a>
       <a
         href="https://github.com/flowmoio/flowmo"
