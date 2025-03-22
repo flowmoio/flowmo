@@ -1,8 +1,8 @@
-![GitHub Banner](https://github.com/user-attachments/assets/1ddd6e56-c946-4efa-9a60-6dc0db36df2b)
+![GitHub Banner](https://github.com/user-attachments/assets/aa62007c-c9aa-4846-90d4-ec10424bc09c)
 
 <div align="center">
 
-A flexible focus timer helping you stay in flow state
+Flexible Pomodoro timer that won't break your flow state
 
 [Web App](https://app.flowmo.io) · [iOS App](https://apps.apple.com/us/app/flowmodor-flowmodoro-timer/id6670529689) · [Android App](https://play.google.com/store/apps/details?id=com.m4xshen.mobile) · [Feedback](https://app.flowmo.io/feedback)
 
@@ -22,7 +22,7 @@ Flowmo addresses this by offering flexibility: **work x minutes, take x/5 minute
 - **⚙️ Customizable Options**: Tweak the work and break ratio to fit your needs.
 
 > [!NOTE]
-> To stay up to date with all the latest news and updates, make sure to follow us on X [@Flowmoio](https://x.com/flowmoio).
+> To stay up to date with all the latest news and updates, make sure to follow us on X [@flowmoio](https://x.com/flowmoio).
 
 ## Development and Contributing
 
