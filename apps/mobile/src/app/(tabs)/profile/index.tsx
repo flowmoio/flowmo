@@ -1,3 +1,6 @@
+import { useNavigation } from '@react-navigation/native';
+import { Link } from 'expo-router';
+import { useEffect } from 'react';
 import { Alert, Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Text } from '@/src/components/Themed';
@@ -5,6 +8,7 @@ import { useSession } from '@/src/ctx';
 
 export default function Profile() {
   const { session, signOut, deleteAccount } = useSession();
+  const navigation = useNavigation();
   const insets = useSafeAreaInsets();
 
   const handleDeleteAccount = async () => {
@@ -14,6 +18,13 @@ export default function Profile() {
       return;
     }
   };
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerShown: false,
+      title: 'Profile',
+    });
+  }, [navigation]);
 
   return (
     <View
@@ -49,6 +60,18 @@ export default function Profile() {
         </Text>
         <Text style={styles.text}>{session?.user.email}</Text>
       </View>
+      <Link style={styles.sectionItem} href="/profile/settings">
+        <Text
+          style={[
+            styles.text,
+            {
+              fontWeight: 500,
+            },
+          ]}
+        >
+          Settings
+        </Text>
+      </Link>
       <Pressable
         style={styles.sectionItem}
         onPress={async () => {
