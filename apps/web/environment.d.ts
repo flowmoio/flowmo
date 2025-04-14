@@ -6,7 +6,6 @@ namespace NodeJS {
     NEXT_PUBLIC_SUPABASE_ANON_KEY: string;
     TODOIST_CLIENT_ID: string;
     TICKTICK_CLIENT_ID: string;
-    TICKTICK_CLIENT_SECRET: string;
     GOOGLE_CLIENT_ID: string;
     GOOGLE_CLIENT_SECRET: string;
     MICROSOFT_CLIENT_ID: string;

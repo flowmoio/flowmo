@@ -12,7 +12,7 @@ export async function connect() {
   url.searchParams.append('scope', 'tasks:write tasks:read');
   url.searchParams.append('response_type', 'code');
 
-  const state = nanoid();
+  const state = `${process.env.NEXT_PUBLIC_URL}/auth/ticktick/callback_${nanoid()}`;
   const cookieStore = await cookies();
   cookieStore.set('ticktick_state', state, { maxAge: 60 * 60 });
   url.searchParams.append('state', state);
