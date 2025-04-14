@@ -4,41 +4,36 @@ import { createClient } from '@/utils/supabase/server';
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
+  const cookieStore = await cookies();
+
+  if (cookieStore.get('todoist_state')?.value !== searchParams.get('state')) {
+    return NextResponse.redirect(`${origin}/auth/auth-code-error`);
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
   const code = searchParams.get('code');
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/todoist`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${session?.access_token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        code,
+      }),
+    },
+  );
 
-  if (code) {
-    const cookieStore = await cookies();
-
-    if (cookieStore.get('todoist_state')?.value !== searchParams.get('state')) {
-      return NextResponse.redirect(`${origin}/auth/auth-code-error`);
-    }
-
-    const url = new URL('https://todoist.com/oauth/access_token');
-    url.searchParams.append('client_id', process.env.TODOIST_CLIENT_ID);
-    url.searchParams.append('client_secret', process.env.TODOIST_CLIENT_SECRET);
-    url.searchParams.append('code', code);
-
-    const response = await fetch(url, { method: 'POST' });
-    const { access_token: accessToken } = await response.json();
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      return NextResponse.redirect(`${origin}/auth/auth-code-error`);
-    }
-
-    const { error } = await supabase
-      .from('integrations')
-      .update({ todoist: accessToken })
-      .eq('user_id', user.id);
-
-    if (!error && response.ok) {
-      return NextResponse.redirect(
-        `${origin}/settings?success=Todoist connected successfully! You can now select tasks from Todoist.`,
-      );
-    }
+  if (response.ok) {
+    return NextResponse.redirect(
+      `${origin}/settings?success=Todoist connected successfully! You can now select tasks from Todoist.`,
+    );
   }
 
   return NextResponse.redirect(
