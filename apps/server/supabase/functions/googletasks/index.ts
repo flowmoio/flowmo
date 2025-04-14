@@ -25,24 +25,30 @@ Deno.serve(async (req: Request) => {
 
   const url = new URL('https://oauth2.googleapis.com/token');
 
-  url.searchParams.append('client_id', Deno.env.get('GOOGLE_CLIENT_ID'));
+  url.searchParams.append('client_id', Deno.env.get('GOOGLE_CLIENT_ID')!);
   url.searchParams.append(
     'client_secret',
-    Deno.env.get('GOOGLE_CLIENT_SECRET'),
+    Deno.env.get('GOOGLE_CLIENT_SECRET')!,
   );
   url.searchParams.append('code', code);
   url.searchParams.append('grant_type', 'authorization_code');
   url.searchParams.append(
     'redirect_uri',
-    Deno.env.get('TICKTICK_REDIRECT_URI'),
+    Deno.env.get('TICKTICK_REDIRECT_URI')!,
   );
 
   const response = await fetch(url, { method: 'POST' });
-  const { access_token: accessToken } = await response.json();
+  const { access_token: accessToken, refresh_token: refreshToken } =
+    await response.json();
 
   const { error } = await supabase
     .from('integrations')
-    .update({ googletasks: accessToken })
+    .update({
+      googletasks: {
+        access_token: accessToken,
+        refresh_token: refreshToken,
+      },
+    })
     .eq('user_id', user.id);
 
   if (error) {

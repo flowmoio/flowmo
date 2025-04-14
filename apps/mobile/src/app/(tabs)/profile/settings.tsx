@@ -4,6 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import { Text } from '@/src/components/Themed';
 import { TickTickButton } from '@/src/components/TickTickButton';
 import { TodoistButton } from '@/src/components/TodoistButton';
+import { GoogleTasksButton } from '@/src/components/GoogleTasksButton';
 
 export default function Settings() {
   const navigation = useNavigation();
@@ -37,6 +38,7 @@ export default function Settings() {
       </Text>
       <TodoistButton />
       <TickTickButton />
+      <GoogleTasksButton />
     </View>
   );
 }
