@@ -31,6 +31,10 @@ Deno.serve(async (req: Request) => {
   );
   url.searchParams.append('code', code);
   url.searchParams.append('grant_type', 'authorization_code');
+  url.searchParams.append(
+    'redirect_uri',
+    Deno.env.get('TICKTICK_REDIRECT_URI'),
+  );
 
   const response = await fetch(url, { method: 'POST' });
   const { access_token: accessToken } = await response.json();

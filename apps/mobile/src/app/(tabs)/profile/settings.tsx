@@ -2,6 +2,7 @@ import { useNavigation } from 'expo-router';
 import { useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '@/src/components/Themed';
+import { TickTickButton } from '@/src/components/TickTickButton';
 import { TodoistButton } from '@/src/components/TodoistButton';
 
 export default function Settings() {
@@ -35,6 +36,7 @@ export default function Settings() {
         Integrations
       </Text>
       <TodoistButton />
+      <TickTickButton />
     </View>
   );
 }
