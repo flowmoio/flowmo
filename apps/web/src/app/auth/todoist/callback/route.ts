@@ -16,6 +16,9 @@ export async function GET(request: Request) {
   } = await supabase.auth.getSession();
 
   const code = searchParams.get('code');
+  if (!code) {
+    return NextResponse.redirect(`${origin}/settings?error=Missing authorization code.`);
+  }
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/todoist`,
     {

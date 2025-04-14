@@ -11,14 +11,14 @@ export async function connect() {
   url.searchParams.append('client_id', process.env.GOOGLE_CLIENT_ID);
   url.searchParams.append(
     'redirect_uri',
-    `${process.env.NEXT_PUBLIC_URL}/auth/googletasks/callback`,
+    `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/callback`,
   );
   url.searchParams.append('response_type', 'code');
   url.searchParams.append('scope', 'https://www.googleapis.com/auth/tasks');
   url.searchParams.append('access_type', 'offline');
   url.searchParams.append('prompt', 'consent');
 
-  const state = nanoid();
+  const state = `${process.env.NEXT_PUBLIC_URL}/auth/googletasks/callback_${nanoid()}`;
   const cookieStore = await cookies();
   cookieStore.set('googletasks_state', state, { maxAge: 60 * 60 });
   url.searchParams.append('state', state);
