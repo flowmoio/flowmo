@@ -7,7 +7,6 @@ namespace NodeJS {
     TODOIST_CLIENT_ID: string;
     TICKTICK_CLIENT_ID: string;
     GOOGLE_CLIENT_ID: string;
-    GOOGLE_CLIENT_SECRET: string;
     MICROSOFT_CLIENT_ID: string;
     MICROSOFT_CLIENT_SECRET: string;
   }

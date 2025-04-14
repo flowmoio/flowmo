@@ -35,7 +35,7 @@ export function GoogleTasksButton() {
     [],
   );
 
-  const [request, response, promptAsync] = useAuthRequest(
+  const [, response, promptAsync] = useAuthRequest(
     authRequestOptions,
     discovery,
   );
@@ -44,8 +44,6 @@ export function GoogleTasksButton() {
   useEffect(() => {
     const subscription = Linking.addEventListener('url', async (event) => {
       const code = new URL(event.url).searchParams.get('code');
-
-      console.log('request', request);
 
       await connectIntegration('googletasks', session?.access_token, code);
       await fetchSources();
