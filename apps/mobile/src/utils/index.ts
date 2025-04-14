@@ -30,5 +30,23 @@ export function generateState() {
   const randomHex = Array.from(randomBytes)
     .map((b) => b.toString(16).padStart(2, '0'))
     .join('');
-  return 'com.m4xshen.mobile://_' + randomHex;
+  return 'com.m4xshen.mobile://profile/settings_' + randomHex;
+}
+
+export async function connectIntegration(
+  source: string,
+  accessToken: string,
+  code: string,
+) {
+  await fetch(
+    `${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/${source}`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ code }),
+    },
+  );
 }

@@ -1,13 +1,14 @@
 import { Source } from '@flowmo/task-sources';
 import { useAuthRequest } from 'expo-auth-session';
 import { Image } from 'expo-image';
+import * as Linking from 'expo-linking';
 import React, { useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator } from 'react-native';
+import { ActivityIndicator, Platform } from 'react-native';
 import { Pressable, Text } from '@/src/components/Themed';
 import { useSession } from '@/src/ctx';
 import { useSources, useTasksActions } from '@/src/hooks/useTasks';
 import { supabase } from '@/src/utils/supabase';
-import { generateState } from '../utils';
+import { connectIntegration, generateState } from '../utils';
 
 const discovery = {
   authorizationEndpoint: 'https://ticktick.com/oauth/authorize',
@@ -34,25 +35,29 @@ export function TickTickButton() {
     discovery,
   );
 
+  // android
   useEffect(() => {
-    if (response?.type !== 'success') {
+    const subscription = Linking.addEventListener('url', async (event) => {
+      const code = new URL(event.url).searchParams.get('code');
+      await connectIntegration('ticktick', session?.access_token, code);
+      await fetchSources();
+      setLoading(false);
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (response?.type !== 'success' && Platform.OS !== 'android') {
       setLoading(false);
       return;
     }
 
     (async () => {
       const { code } = response.params;
-      await fetch(
-        `${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/ticktick`,
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${session?.access_token}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ code }),
-        },
-      );
+      await connectIntegration('ticktick', session?.access_token, code);
       await fetchSources();
       setLoading(false);
     })();
@@ -85,7 +90,9 @@ export function TickTickButton() {
           await fetchSources();
           setLoading(false);
         } else {
-          await promptAsync();
+          await promptAsync({
+            showInRecents: true,
+          });
         }
       }}
     >

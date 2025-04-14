@@ -3,6 +3,7 @@
     "name": "Flowmo",
     "slug": "mobile",
     "version": "1.0.0",
+    "scheme": "com.m4xshen.mobile",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "userInterfaceStyle": "automatic",
