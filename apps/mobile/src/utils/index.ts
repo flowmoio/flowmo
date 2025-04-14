@@ -1,3 +1,4 @@
+import * as Crypto from 'expo-crypto';
 import * as Haptics from 'expo-haptics';
 import { Platform } from 'react-native';
 
@@ -23,3 +24,11 @@ export const hapticsImpact = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   }
 };
+
+export function generateState() {
+  const randomBytes = Crypto.getRandomBytes(16);
+  const randomHex = Array.from(randomBytes)
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('');
+  return 'com.m4xshen.mobile://_' + randomHex;
+}
