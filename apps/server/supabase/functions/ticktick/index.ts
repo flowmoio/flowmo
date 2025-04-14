@@ -23,20 +23,15 @@ Deno.serve(async (req: Request) => {
     return new Response('Invalid user token', { status: 401 });
   }
 
-  const url = new URL('https://ticktick.com/oauth/token');
-  url.searchParams.append('client_id', Deno.env.get('TICKTICK_CLIENT_ID'));
-  url.searchParams.append(
-    'client_secret',
-    Deno.env.get('TICKTICK_CLIENT_SECRET'),
-  );
-  url.searchParams.append('code', code);
-  url.searchParams.append('grant_type', 'authorization_code');
-  url.searchParams.append(
-    'redirect_uri',
-    Deno.env.get('TICKTICK_REDIRECT_URI'),
-  );
+  const url = 'https://ticktick.com/oauth/token';
+  const body = new URLSearchParams();
+  body.append('client_id', Deno.env.get('TICKTICK_CLIENT_ID'));
+  body.append('client_secret', Deno.env.get('TICKTICK_CLIENT_SECRET'));
+  body.append('code', code);
+  body.append('grant_type', 'authorization_code');
+  body.append('redirect_uri', Deno.env.get('TICKTICK_REDIRECT_URI'));
 
-  const response = await fetch(url, { method: 'POST' });
+  const response = await fetch(url, { method: 'POST', body });
   const { access_token: accessToken } = await response.json();
 
   const { error } = await supabase
