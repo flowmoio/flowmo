@@ -3,9 +3,8 @@
 import { Tables } from '@flowmo/types';
 import { Card, CardBody } from '@heroui/card';
 import { Skeleton } from '@heroui/react';
-import { useQuery } from '@supabase-cache-helpers/postgrest-swr';
+import useLogs from '@/hooks/useLogs';
 import { calculateStreaks } from '@/utils/stats/calculateStreaks';
-import supabase from '@/utils/supabase/client';
 import Heatmap from './Heatmap';
 
 const calculateFocusTime = (data: Tables<'logs'>[]) => {
@@ -33,15 +32,9 @@ const calculateFocusTime = (data: Tables<'logs'>[]) => {
 };
 
 export default function YearlyStats() {
-  const { data, isLoading } = useQuery(supabase.from('logs').select('*'), {
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-  });
-
-  const focusTimeData = calculateFocusTime(data ?? []);
-  const { currentStreak, longestStreak } = calculateStreaks(
-    focusTimeData ?? [],
-  );
+  const { logs, isLoading } = useLogs();
+  const focusTimeData = calculateFocusTime(logs);
+  const { currentStreak, longestStreak } = calculateStreaks(focusTimeData);
 
   return (
     <Card className="flex w-full shrink-0 flex-col bg-midground">
