@@ -13,7 +13,7 @@ import Link from 'next/link';
 import { signOut } from '@/actions/auth';
 import { User as UserIcon } from '../Icons';
 
-export default function UserDropdown({ user }: { user: User | null }) {
+export default function UserDropdown({ user }: { user: User | undefined }) {
   return (
     <Dropdown
       classNames={{
@@ -32,7 +32,7 @@ export default function UserDropdown({ user }: { user: User | null }) {
         />
       </DropdownTrigger>
       <DropdownMenu aria-label="user info menu">
-        {user && (
+        {user ? (
           <DropdownItem
             key="info"
             textValue="info"
@@ -42,7 +42,7 @@ export default function UserDropdown({ user }: { user: User | null }) {
             <div>{user.email}</div>
             <Divider className="mt-3" />
           </DropdownItem>
-        )}
+        ) : null}
         <DropdownItem
           key="x"
           as={Link}

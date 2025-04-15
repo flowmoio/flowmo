@@ -8,8 +8,8 @@ import UserDropdown from './UserDropdown';
 export default async function Sidebar({ children }: { children: ReactNode }) {
   const supabase = await createClient();
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    data: { session },
+  } = await supabase.auth.getSession();
 
   return (
     <div className="flex h-[100dvh] flex-col-reverse sm:flex-row">
@@ -34,7 +34,7 @@ export default async function Sidebar({ children }: { children: ReactNode }) {
           </SidebarTab>
         </div>
         <div className="absolute right-5 top-5 mt-auto flex flex-row items-center gap-5 sm:static sm:flex-col">
-          <UserDropdown user={user} />
+          <UserDropdown user={session?.user} />
         </div>
       </div>
       <div className="flex h-full flex-col items-center overflow-y-scroll scrollbar-hide sm:w-full">
