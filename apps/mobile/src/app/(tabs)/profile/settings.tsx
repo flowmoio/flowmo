@@ -1,10 +1,11 @@
 import { useNavigation } from 'expo-router';
 import { useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { GoogleTasksButton } from '@/src/components/GoogleTasksButton';
+import { MicrosoftToDoButton } from '@/src/components/MicrosoftToDoButton';
 import { Text } from '@/src/components/Themed';
 import { TickTickButton } from '@/src/components/TickTickButton';
 import { TodoistButton } from '@/src/components/TodoistButton';
-import { GoogleTasksButton } from '@/src/components/GoogleTasksButton';
 
 export default function Settings() {
   const navigation = useNavigation();
@@ -39,6 +40,7 @@ export default function Settings() {
       <TodoistButton />
       <TickTickButton />
       <GoogleTasksButton />
+      <MicrosoftToDoButton />
     </View>
   );
 }
