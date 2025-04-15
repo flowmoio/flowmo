@@ -14,13 +14,13 @@ export async function connect() {
   url.searchParams.append('client_id', process.env.MICROSOFT_CLIENT_ID);
   url.searchParams.append(
     'redirect_uri',
-    `${process.env.NEXT_PUBLIC_URL}/auth/microsofttodo/callback`,
+    `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/callback`,
   );
   url.searchParams.append('response_type', 'code');
   url.searchParams.append('scope', 'offline_access Tasks.ReadWrite');
   url.searchParams.append('response_mode', 'query');
 
-  const state = nanoid();
+  const state = `${process.env.NEXT_PUBLIC_URL}/auth/microsofttodo/callback_${nanoid()}`;
   const cookieStore = await cookies();
   cookieStore.set('microsofttodo_state', state, { maxAge: 60 * 60 });
   url.searchParams.append('state', state);

@@ -6,73 +6,40 @@ export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get('code');
 
-  if (code) {
-    const cookieStore = await cookies();
-    if (
-      cookieStore.get('microsofttodo_state')?.value !==
-      searchParams.get('state')
-    ) {
-      return NextResponse.redirect(`${origin}/auth/auth-code-error`);
-    }
+  if (!code) {
+    return NextResponse.redirect(
+      `${origin}/settings?error=Missing authorization code.`,
+    );
+  }
 
-    const tokenUrl =
-      'https://login.microsoftonline.com/common/oauth2/v2.0/token';
-    const body = new URLSearchParams({
-      client_id: process.env.MICROSOFT_CLIENT_ID,
-      client_secret: process.env.MICROSOFT_CLIENT_SECRET,
-      code,
-      grant_type: 'authorization_code',
-      redirect_uri: `${process.env.NEXT_PUBLIC_URL}/auth/microsofttodo/callback`,
-    });
+  const cookieStore = await cookies();
+  if (
+    cookieStore.get('microsofttodo_state')?.value !== searchParams.get('state')
+  ) {
+    return NextResponse.redirect(`${origin}/auth/auth-code-error`);
+  }
 
-    try {
-      const response = await fetch(tokenUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: body.toString(),
-      });
+  const supabase = await createClient();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
-      if (!response.ok) {
-        throw new Error('Failed to exchange code for tokens');
-      }
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/microsofttodo`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${session?.access_token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ code }),
+    },
+  );
 
-      const { access_token: accessToken, refresh_token: refreshToken } =
-        await response.json();
-
-      const supabase = await createClient();
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (!user) {
-        return NextResponse.redirect(`${origin}/auth/auth-code-error`);
-      }
-
-      const { error } = await supabase
-        .from('integrations')
-        .update({
-          microsofttodo: {
-            access_token: accessToken,
-            refresh_token: refreshToken,
-          },
-        })
-        .eq('user_id', user.id);
-
-      if (error) {
-        throw new Error('Failed to store tokens');
-      }
-
-      return NextResponse.redirect(
-        `${origin}/settings?success=Microsoft To Do connected successfully!`,
-      );
-    } catch (error) {
-      console.error('Microsoft Todo integration error:', error);
-      return NextResponse.redirect(
-        `${origin}/settings?error=Failed to connect Microsoft To Do.`,
-      );
-    }
+  if (response.ok) {
+    return NextResponse.redirect(
+      `${origin}/settings?success=Microsoft To Do connected successfully!`,
+    );
   }
 
   return NextResponse.redirect(
