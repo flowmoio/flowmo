@@ -2,7 +2,10 @@
 
 import { Tables } from '@flowmo/types';
 import { Card, CardBody } from '@heroui/card';
+import { Skeleton } from '@heroui/react';
+import { useQuery } from '@supabase-cache-helpers/postgrest-swr';
 import { calculateStreaks } from '@/utils/stats/calculateStreaks';
+import supabase from '@/utils/supabase/client';
 import Heatmap from './Heatmap';
 
 const calculateFocusTime = (data: Tables<'logs'>[]) => {
@@ -29,9 +32,16 @@ const calculateFocusTime = (data: Tables<'logs'>[]) => {
   }));
 };
 
-export default function YearlyStats({ data }: { data: Tables<'logs'>[] }) {
-  const focusTimeData = calculateFocusTime(data);
-  const { currentStreak, longestStreak } = calculateStreaks(focusTimeData);
+export default function YearlyStats() {
+  const { data, isLoading } = useQuery(supabase.from('logs').select('*'), {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  });
+
+  const focusTimeData = calculateFocusTime(data ?? []);
+  const { currentStreak, longestStreak } = calculateStreaks(
+    focusTimeData ?? [],
+  );
 
   return (
     <Card className="flex w-full shrink-0 flex-col bg-midground">
@@ -40,19 +50,34 @@ export default function YearlyStats({ data }: { data: Tables<'logs'>[] }) {
           <div className="flex flex-col items-center">
             <div className="text-sm">Longest Streak</div>
             <div className="flex items-end gap-1">
-              <div className="text-3xl font-semibold">{longestStreak}</div>
+              <Skeleton
+                isLoaded={!isLoading}
+                className="rounded-md dark:bg-midground"
+              >
+                <div className="text-3xl font-semibold">{longestStreak}</div>
+              </Skeleton>
               days
             </div>
           </div>
           <div className="flex flex-col items-center">
             <div className="text-sm">Current Streak</div>
             <div className="flex items-end gap-1">
-              <div className="text-3xl font-semibold">{currentStreak}</div>
+              <Skeleton
+                isLoaded={!isLoading}
+                className="rounded-md dark:bg-midground"
+              >
+                <div className="text-3xl font-semibold">{currentStreak}</div>
+              </Skeleton>
               days
             </div>
           </div>
         </div>
-        <Heatmap data={focusTimeData} />
+        <Skeleton
+          isLoaded={!isLoading}
+          className="rounded-lg dark:bg-midground"
+        >
+          <Heatmap data={focusTimeData} />
+        </Skeleton>
       </CardBody>
     </Card>
   );

@@ -2,16 +2,12 @@ import { Metadata } from 'next';
 import StatsCard from '@/components/Stats/StatsCard';
 import TaskTime from '@/components/Stats/TaskTime';
 import YearlyStats from '@/components/Stats/YearlyStats';
-import { createClient } from '@/utils/supabase/server';
 
 export const metadata: Metadata = {
   title: 'Stats | Flowmo',
 };
 
 export default async function Stats() {
-  const supabase = await createClient();
-  const { data } = await supabase.from('logs').select('*');
-
   return (
     <div className="flex w-full flex-col gap-5 overflow-y-auto p-5 sm:min-h-screen lg:items-center lg:justify-center">
       <div className="flex w-full flex-col gap-5 lg:h-[70vh] lg:flex-row lg:justify-center">
@@ -22,7 +18,7 @@ export default async function Stats() {
           <TaskTime />
         </div>
       </div>
-      <YearlyStats data={data ?? []} />
+      <YearlyStats />
     </div>
   );
 }

@@ -16,6 +16,8 @@
     "@flowmo/utils": "workspace:*",
     "@heroui/react": "2.6.14",
     "@number-flow/react": "^0.5.5",
+    "@supabase-cache-helpers/postgrest-swr": "^1.11.1",
+    "@supabase/postgrest-js": "^1.19.4",
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.47.10",
     "canvas": "^3.0.1",
@@ -29,6 +31,7 @@
     "react-dom": "19.0.0",
     "react-hotkeys-hook": "^4.5.0",
     "sonner": "^2.0.1",
+    "swr": "^2.3.3",
     "tailwind-scrollbar-hide": "^1.1.7",
     "zustand": "^5.0.2"
   },
