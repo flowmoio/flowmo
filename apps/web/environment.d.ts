@@ -8,6 +8,5 @@ namespace NodeJS {
     TICKTICK_CLIENT_ID: string;
     GOOGLE_CLIENT_ID: string;
     MICROSOFT_CLIENT_ID: string;
-    MICROSOFT_CLIENT_SECRET: string;
   }
 }
