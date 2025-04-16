@@ -96,10 +96,23 @@ func isActivityRunning() -> Bool {
 // MARK: Module definition
 
 public class ActivityControllerModule: Module {
+    @objc func appWillTerminate() {
+        if #available(iOS 16.2, *), let activity = (getCurrentActivity() as? DefinedActivityWrapper)?.getActivity() {
+            Task {
+                await activity.end(nil, dismissalPolicy: .immediate)
+                log.debug("Live activity ended due to app termination")
+            }
+        }
+    }
   private var activityWrapper: ActivityWrapper?
 
   public func definition() -> ModuleDefinition {
     Name("ActivityController")
+    OnCreate {
+      #if canImport(UIKit)
+      NotificationCenter.default.addObserver(self, selector: #selector(ActivityControllerModule.appWillTerminate), name: UIApplication.willTerminateNotification, object: nil)
+      #endif
+    }
 
     Property("areLiveActivitiesEnabled") {
       if #available(iOS 16.2, *) {
