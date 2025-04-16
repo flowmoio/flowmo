@@ -1,6 +1,6 @@
 import { useNavigation } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, Switch, View } from 'react-native';
 import * as DropdownMenu from 'zeego/dropdown-menu';
 import { GoogleTasksButton } from '@/src/components/GoogleTasksButton';
 import { MicrosoftToDoButton } from '@/src/components/MicrosoftToDoButton';
@@ -12,15 +12,17 @@ import { supabase } from '@/src/utils/supabase';
 export default function Settings() {
   const navigation = useNavigation();
   const [breakRatio, setBreakRatio] = useState<number | null>(null);
+  const [showPause, setShowPause] = useState<boolean>(false);
 
   useEffect(() => {
     (async () => {
       const { data: settingsData } = await supabase
         .from('settings')
-        .select('break_ratio')
+        .select('*')
         .single();
 
       setBreakRatio(settingsData?.break_ratio);
+      setShowPause(settingsData?.show_pause);
     })();
   }, []);
 
@@ -140,6 +142,44 @@ export default function Settings() {
             ))}
           </DropdownMenu.Content>
         </DropdownMenu.Root>
+      </View>
+      <View
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 6,
+          marginTop: 10,
+        }}
+      >
+        <Text style={{ fontSize: 15.5, fontWeight: 600 }}>
+          Show pause button:
+        </Text>
+        <Switch
+          value={showPause}
+          trackColor={{ true: '#DBBFFF' }}
+          onValueChange={async (value) => {
+            setShowPause(value);
+
+            const {
+              data: { user },
+            } = await supabase.auth.getUser();
+
+            if (!user) {
+              console.error('User not found');
+              return;
+            }
+
+            const { error } = await supabase
+              .from('settings')
+              .update({ show_pause: value })
+              .eq('user_id', user.id);
+
+            if (error) {
+              console.error('Error updating show_pause:', error);
+            }
+          }}
+        />
       </View>
     </View>
   );

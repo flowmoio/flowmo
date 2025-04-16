@@ -48,6 +48,7 @@ export type Database = {
         Row: {
           end_time: string
           id: number
+          platform: string | null
           start_time: string
           task_id: number | null
           task_name: string | null
@@ -56,6 +57,7 @@ export type Database = {
         Insert: {
           end_time: string
           id?: number
+          platform?: string | null
           start_time: string
           task_id?: number | null
           task_name?: string | null
@@ -64,6 +66,7 @@ export type Database = {
         Update: {
           end_time?: string
           id?: number
+          platform?: string | null
           start_time?: string
           task_id?: number | null
           task_name?: string | null
@@ -90,16 +93,19 @@ export type Database = {
         Row: {
           break_ratio: number
           id: number
+          show_pause: boolean
           user_id: string | null
         }
         Insert: {
           break_ratio?: number
           id?: number
+          show_pause?: boolean
           user_id?: string | null
         }
         Update: {
           break_ratio?: number
           id?: number
+          show_pause?: boolean
           user_id?: string | null
         }
         Relationships: [

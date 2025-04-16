@@ -1,5 +1,6 @@
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import notifee from '@notifee/react-native';
+import { useFocusEffect } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
@@ -21,6 +22,7 @@ import {
   useTotalTime,
 } from '@/src/hooks/useTimer';
 import { formatTime } from '@/src/utils';
+import { supabase } from '@/src/utils/supabase';
 
 export default function TimerTab() {
   const startTime = useStartTime();
@@ -30,12 +32,26 @@ export default function TimerTab() {
   const mode = useMode();
   const status = useStatus();
   const [isLoading, setIsLoading] = useState(false);
+  const [showPause, setShowPause] = useState(false);
   const { start, stop, pause, resume } = useActions();
 
   const focusingTask = useFocusingTask();
   const activeSource = useActiveSource();
   const liveActivityRunning = isActivityRunning();
   const firstRender = useRef(true);
+
+  useFocusEffect(() => {
+    (async () => {
+      const { data: settingsData } = await supabase
+        .from('settings')
+        .select('show_pause')
+        .single();
+
+      if (settingsData) {
+        setShowPause(settingsData.show_pause);
+      }
+    })();
+  });
 
   useEffect(() => {
     if (Platform.OS !== 'ios') {
@@ -94,7 +110,8 @@ export default function TimerTab() {
           )}
         </AnimatedCircularProgress>
         <View style={styles.buttonContainer}>
-          {mode === 'focus' &&
+          {showPause &&
+            mode === 'focus' &&
             (status === 'running' || status === 'paused') && (
               <Pressable
                 scaleValue={0.9}
