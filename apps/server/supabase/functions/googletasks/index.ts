@@ -41,6 +41,10 @@ Deno.serve(async (req: Request) => {
   const { access_token: accessToken, refresh_token: refreshToken } =
     await response.json();
 
+  if (accessToken === undefined || refreshToken === undefined) {
+    return new Response('Failed to get access token', { status: 500 });
+  }
+
   const { error } = await supabase
     .from('integrations')
     .update({

@@ -33,8 +33,6 @@ Deno.serve(async (req: Request) => {
     redirect_uri: Deno.env.get('MICROSOFT_REDIRECT_URI')!,
   });
 
-  console.log(body);
-
   const response = await fetch(url, {
     method: 'POST',
     headers: {
@@ -43,12 +41,12 @@ Deno.serve(async (req: Request) => {
     body: body.toString(),
   });
 
-  console.log(response);
-
   const { access_token: accessToken, refresh_token: refreshToken } =
     await response.json();
 
-  console.log(accessToken, refreshToken);
+  if (accessToken === undefined || refreshToken === undefined) {
+    return new Response('Failed to get access token', { status: 500 });
+  }
 
   const { error } = await supabase
     .from('integrations')
