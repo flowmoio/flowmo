@@ -1,4 +1,5 @@
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import notifee from '@notifee/react-native';
 import { useEffect, useRef, useState } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
@@ -127,6 +128,11 @@ export default function TimerTab() {
             onPress={async () => {
               setIsLoading(true);
               if (status !== 'idle') {
+                if (mode === 'break') {
+                  const ids = await notifee.getTriggerNotificationIds();
+                  notifee.cancelTriggerNotifications(ids);
+                }
+
                 await stop(Platform.OS, focusingTask, activeSource);
               } else {
                 await start();
