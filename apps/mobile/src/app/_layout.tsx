@@ -5,6 +5,7 @@ import { ActivityIndicator, Pressable, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SessionProvider, useSession } from '@/src/ctx';
 import BottomSheetComponent from '../components/BottomSheetComponent';
+import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { Text } from '../components/Themed';
 import { BottomSheetProvider } from '../context/BottomSheetContext';
 
@@ -79,12 +80,14 @@ function RootStack() {
 export default function Layout() {
   return (
     <SessionProvider>
-      <GestureHandlerRootView style={{ flex: 1 }}>
+      <KeyboardProvider>
+        <GestureHandlerRootView style={{ flex: 1 }}>
         <BottomSheetProvider>
           <RootStack />
           <BottomSheetComponent />
         </BottomSheetProvider>
-      </GestureHandlerRootView>
+        </GestureHandlerRootView>
+      </KeyboardProvider>
     </SessionProvider>
   );
 }

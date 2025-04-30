@@ -5,13 +5,13 @@ import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
-  FlatList,
-  KeyboardAvoidingView,
   Platform,
+  ScrollView,
   TextInput,
   View,
 } from 'react-native';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 import { Pressable, Text } from '@/src/components/Themed';
 import {
   useIsLoadingTasks,
@@ -37,61 +37,71 @@ export default function TasksScreen() {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      keyboardVerticalOffset={100}
-      style={{ flex: 1, backgroundColor: '#131221', paddingHorizontal: 20 }}
+      behavior="padding"
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 60}
+      style={{
+        backgroundColor: '#131221',
+        flex: 1,
+      }}
     >
-      {isLoadingTasks ? (
-        <View
-          style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
-        >
-          <ActivityIndicator />
-        </View>
-      ) : tasks.length === 0 ? (
-        <View
-          style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
-        >
-          <Text style={{ color: '#FFFFFF', fontSize: 16 }}>
-            All tasks completed!
-          </Text>
-        </View>
-      ) : (
-        <FlatList
-          data={tasks}
-          renderItem={({ item }) => (
-            <View
-              style={{
-                borderBottomWidth: 1,
-                borderBottomColor: '#3F3E55',
-                flexDirection: 'row',
-                alignItems: 'center',
-                paddingVertical: 16,
-                gap: 10,
-              }}
-            >
-              <BouncyCheckbox
-                size={25}
-                fillColor="#DBBFFF"
-                disableText
-                iconStyle={{ borderColor: '#DBBFFF' }}
-                innerIconStyle={{ borderWidth: 1 }}
-                textStyle={{ color: '#FFFFFF' }}
-                onPress={async () => {
-                  hapticsImpact();
-                  await completeTask(item);
+      <ScrollView style={{ flex: 1, paddingHorizontal: 20 }}>
+        {isLoadingTasks ? (
+          <View
+            style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+          >
+            <ActivityIndicator />
+          </View>
+        ) : tasks.length === 0 ? (
+          <View
+            style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+          >
+            <Text style={{ color: '#FFFFFF', fontSize: 16 }}>
+              All tasks completed!
+            </Text>
+          </View>
+        ) : (
+          <View style={{ flex: 1 }}>
+            {tasks.map((item) => (
+              <View
+                key={item.id.toString()}
+                style={{
+                  borderBottomWidth: 1,
+                  borderBottomColor: '#3F3E55',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  paddingVertical: 16,
+                  gap: 10,
                 }}
-                isChecked={item.completed}
-              />
-              <Text style={{ fontSize: 16 }}>
-                {convertMarkdownToText(item.name)}
-              </Text>
-            </View>
-          )}
-          keyExtractor={(item) => item.id.toString()}
-          style={{ flex: 1 }}
-        />
-      )}
-      <View style={{ flexDirection: 'row', marginBottom: 20 }}>
+              >
+                <BouncyCheckbox
+                  size={25}
+                  fillColor="#DBBFFF"
+                  disableText
+                  iconStyle={{ borderColor: '#DBBFFF' }}
+                  innerIconStyle={{ borderWidth: 1 }}
+                  textStyle={{ color: '#FFFFFF' }}
+                  onPress={async () => {
+                    hapticsImpact();
+                    await completeTask(item);
+                  }}
+                  isChecked={item.completed}
+                />
+                <Text style={{ fontSize: 16 }}>
+                  {convertMarkdownToText(item.name)}
+                </Text>
+              </View>
+            ))}
+          </View>
+        )}
+      </ScrollView>
+      <View
+        style={{
+          backgroundColor: '#131221',
+          flexDirection: 'row',
+          paddingVertical: 10,
+          paddingHorizontal: 10,
+        }}
+      >
         <TextInput
           style={{
             flex: 1,
