@@ -7,6 +7,7 @@ import { Providers } from './providers';
 
 const inter = Inter({ subsets: ['latin'] });
 
+export const experimental_ppr = true;
 export const metadata: Metadata = {
   metadataBase: new URL('https://app.flowmo.io'),
   applicationName: 'Flowmo',

@@ -12,21 +12,21 @@ export default async function App() {
   } = await supabase.auth.getSession();
 
   return (
-    <HomeProvider>
-      <div className="flex h-full flex-col items-center justify-center gap-2 sm:gap-5">
-        {!session && (
-          <div className="mt-4 text-sm">
-            <Link href="/signin" underline="always" className="text-sm">
-              Sign in
-            </Link>{' '}
-            to save focus history and tasks.
-          </div>
-        )}
+    <div className="flex h-full flex-col items-center justify-center gap-2 sm:gap-5">
+      {!session && (
+        <div className="mt-4 text-sm">
+          <Link href="/signin" underline="always" className="text-sm">
+            Sign in
+          </Link>{' '}
+          to save focus history and tasks.
+        </div>
+      )}
+      <HomeProvider>
         <TabsWrapper>
           <TimerTab />
           <TasksTab />
         </TabsWrapper>
-      </div>
-    </HomeProvider>
+      </HomeProvider>
+    </div>
   );
 }
