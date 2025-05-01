@@ -14,7 +14,7 @@
     "@flowmo/stores": "workspace:*",
     "@flowmo/task-sources": "workspace:*",
     "@flowmo/utils": "workspace:*",
-    "@heroui/react": "2.6.14",
+    "@heroui/react": "2.7.8",
     "@number-flow/react": "^0.5.5",
     "@supabase-cache-helpers/postgrest-swr": "^1.11.1",
     "@supabase/postgrest-js": "^1.19.4",
