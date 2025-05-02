@@ -1,13 +1,11 @@
 import { useBreakRatio, useShowPause } from '@flowmo/hooks';
+import { Source } from '@flowmo/task-sources';
 import { useNavigation } from 'expo-router';
 import { useEffect } from 'react';
 import { ActivityIndicator, StyleSheet, Switch, View } from 'react-native';
 import * as DropdownMenu from 'zeego/dropdown-menu';
-import { GoogleTasksButton } from '@/src/components/GoogleTasksButton';
-import { MicrosoftToDoButton } from '@/src/components/MicrosoftToDoButton';
+import { IntegrationButton } from '@/src/components/IntegrationButton';
 import { Text } from '@/src/components/Themed';
-import { TickTickButton } from '@/src/components/TickTickButton';
-import { TodoistButton } from '@/src/components/TodoistButton';
 import { supabase } from '@/src/utils/supabase';
 
 export default function Settings() {
@@ -42,10 +40,41 @@ export default function Settings() {
       >
         Integrations
       </Text>
-      <TodoistButton />
-      <TickTickButton />
-      <GoogleTasksButton />
-      <MicrosoftToDoButton />
+      <IntegrationButton
+        source={Source.Todoist}
+        integrationKey="todoist"
+        discoveryEndpoint="https://todoist.com/oauth/authorize"
+        clientId={process.env.EXPO_PUBLIC_TODOIST_CLIENT_ID!}
+        scopes={['data:read_write']}
+        imageSrc={require('../../../../assets/images/todoist.png')}
+      />
+      <IntegrationButton
+        source={Source.TickTick}
+        integrationKey="ticktick"
+        discoveryEndpoint="https://ticktick.com/oauth/authorize"
+        clientId={process.env.EXPO_PUBLIC_TICKTICK_CLIENT_ID!}
+        scopes={['tasks:write', 'tasks:read']}
+        imageSrc={require('../../../../assets/images/ticktick.png')}
+      />
+      <IntegrationButton
+        source={Source.GoogleTasks}
+        integrationKey="googletasks"
+        discoveryEndpoint="https://accounts.google.com/o/oauth2/v2/auth"
+        clientId={process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID!}
+        scopes={['https://www.googleapis.com/auth/tasks']}
+        prompt="consent"
+        extraParams={{ access_type: 'offline' }}
+        imageSrc={require('../../../../assets/images/googletasks.png')}
+      />
+      <IntegrationButton
+        source={Source.MicrosoftToDo}
+        integrationKey="microsofttodo"
+        discoveryEndpoint="https://login.microsoftonline.com/common/oauth2/v2.0/authorize"
+        clientId={process.env.EXPO_PUBLIC_MICROSOFT_CLIENT_ID!}
+        scopes={['offline_access', 'Tasks.ReadWrite']}
+        extraParams={{ response_mode: 'query' }}
+        imageSrc={require('../../../../assets/images/microsofttodo.png')}
+      />
       <Text style={[styles.sectionTitle, { paddingBottom: 10, marginTop: 20 }]}>
         Options
       </Text>

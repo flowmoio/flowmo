@@ -10,11 +10,27 @@ import { useSources, useTasksActions } from '@/src/hooks/useTasks';
 import { supabase } from '@/src/utils/supabase';
 import { connectIntegration, generateState } from '../utils';
 
-const discovery = {
-  authorizationEndpoint: 'https://ticktick.com/oauth/authorize',
-};
+interface IntegrationButtonProps {
+  source: Source;
+  integrationKey: string;
+  discoveryEndpoint: string;
+  clientId: string;
+  scopes: string[];
+  extraParams?: object;
+  prompt?: string;
+  imageSrc: any;
+}
 
-export function TickTickButton() {
+export function IntegrationButton({
+  source,
+  integrationKey,
+  discoveryEndpoint,
+  clientId,
+  scopes,
+  extraParams,
+  prompt,
+  imageSrc,
+}: IntegrationButtonProps) {
   const [isLoading, setLoading] = useState(false);
   const sources = useSources();
   const { session } = useSession();
@@ -22,32 +38,32 @@ export function TickTickButton() {
 
   const authRequestOptions = useMemo(
     () => ({
-      clientId: process.env.EXPO_PUBLIC_TICKTICK_CLIENT_ID!,
-      scopes: ['tasks:write', 'tasks:read'],
+      clientId,
+      scopes,
       redirectUri: `${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/callback`,
       state: generateState(),
+      prompt,
+      usePKCE: false,
+      extraParams,
     }),
-    [],
+    [clientId, scopes, prompt, extraParams],
   );
 
+  const discovery = { authorizationEndpoint: discoveryEndpoint };
   const [, response, promptAsync] = useAuthRequest(
     authRequestOptions,
     discovery,
   );
 
-  // android
   useEffect(() => {
     const subscription = Linking.addEventListener('url', async (event) => {
       const code = new URL(event.url).searchParams.get('code');
-      await connectIntegration('ticktick', session?.access_token, code);
+      await connectIntegration(integrationKey, session?.access_token, code);
       await fetchSources();
       setLoading(false);
     });
-
-    return () => {
-      subscription.remove();
-    };
-  }, []);
+    return () => subscription.remove();
+  }, [session]);
 
   useEffect(() => {
     if (response?.type !== 'success' && Platform.OS !== 'android') {
@@ -57,11 +73,36 @@ export function TickTickButton() {
 
     (async () => {
       const { code } = response.params;
-      await connectIntegration('ticktick', session?.access_token, code);
+      await connectIntegration(integrationKey, session?.access_token, code);
       await fetchSources();
       setLoading(false);
     })();
   }, [response]);
+
+  const handlePress = async () => {
+    setLoading(true);
+    if (sources.includes(source)) {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      const { error } = await supabase
+        .from('integrations')
+        .update({ [integrationKey]: null })
+        .eq('user_id', user!.id);
+      if (error) {
+        console.error(`Error disconnecting ${source}:`, error);
+      }
+      onSourceChange(Source.Flowmo);
+      await fetchSources();
+      setLoading(false);
+    } else {
+      await promptAsync();
+    }
+  };
+
+  const label = sources.includes(source)
+    ? `Disconnect ${source}`
+    : `Connect ${source}`;
 
   return (
     <Pressable
@@ -73,34 +114,13 @@ export function TickTickButton() {
         gap: 5,
         alignItems: 'center',
       }}
-      onPress={async () => {
-        setLoading(true);
-        if (sources.includes(Source.TickTick)) {
-          const {
-            data: { user },
-          } = await supabase.auth.getUser();
-          const { error } = await supabase
-            .from('integrations')
-            .update({ ticktick: null })
-            .eq('user_id', user!.id);
-          if (error) {
-            console.error('Error disconnecting TickTick:', error);
-          }
-          onSourceChange(Source.Flowmo);
-          await fetchSources();
-          setLoading(false);
-        } else {
-          await promptAsync({
-            showInRecents: true,
-          });
-        }
-      }}
+      onPress={handlePress}
     >
       {isLoading ? (
         <ActivityIndicator style={{ width: 24, height: 24 }} />
       ) : (
         <Image
-          source={require('../../assets/images/ticktick.png')}
+          source={imageSrc}
           style={{ width: 24, height: 24, alignSelf: 'center' }}
           contentFit="contain"
         />
@@ -112,9 +132,7 @@ export function TickTickButton() {
           fontSize: 16,
         }}
       >
-        {sources.includes(Source.TickTick)
-          ? 'Disconnect TickTick'
-          : 'Connect TickTick'}
+        {label}
       </Text>
     </Pressable>
   );
