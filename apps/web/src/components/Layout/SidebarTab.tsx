@@ -50,6 +50,7 @@ export default function SidebarTab({
       <Button
         as={Link}
         href={tabPathname}
+        prefetch
         target={shouldOpenLinkInNewTab ? '_blank' : undefined}
         disableRipple
         isIconOnly
