@@ -44,13 +44,15 @@ export default function TasksScreen() {
         flex: 1,
       }}
     >
-      <ScrollView style={{ flex: 1, paddingHorizontal: 20 }}>
+      <ScrollView
+        style={{ flex: 1, paddingHorizontal: 20 }}
+        contentContainerStyle={{
+          justifyContent: 'center',
+          minHeight: '90%',
+        }}
+      >
         {isLoadingTasks ? (
-          <View
-            style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
-          >
-            <ActivityIndicator />
-          </View>
+          <ActivityIndicator />
         ) : tasks.length === 0 ? (
           <View
             style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
