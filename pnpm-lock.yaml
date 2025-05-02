@@ -88,6 +88,9 @@ importers:
       '@expo/vector-icons':
         specifier: ^14.0.4
         version: 14.0.4
+      '@flowmo/hooks':
+        specifier: workspace:*
+        version: link:../../packages/hooks
       '@flowmo/stores':
         specifier: workspace:*
         version: link:../../packages/stores
@@ -354,6 +357,15 @@ importers:
       typescript:
         specifier: ^5.3.3
         version: 5.3.3
+
+  packages/hooks:
+    dependencies:
+      '@supabase/supabase-js':
+        specifier: ^2.47.10
+        version: 2.47.10
+      swr:
+        specifier: ^2.3.3
+        version: 2.3.3(react@19.0.0)
 
   packages/stores:
     dependencies:

@@ -1,6 +1,6 @@
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import { useShowPause } from '@flowmo/hooks';
 import notifee from '@notifee/react-native';
-import { useFocusEffect } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
@@ -32,7 +32,6 @@ export default function TimerTab() {
   const mode = useMode();
   const status = useStatus();
   const [isLoading, setIsLoading] = useState(false);
-  const [showPause, setShowPause] = useState(false);
   const { start, stop, pause, resume } = useActions();
 
   const focusingTask = useFocusingTask();
@@ -40,18 +39,7 @@ export default function TimerTab() {
   const liveActivityRunning = isActivityRunning();
   const firstRender = useRef(true);
 
-  useFocusEffect(() => {
-    (async () => {
-      const { data: settingsData } = await supabase
-        .from('settings')
-        .select('show_pause')
-        .single();
-
-      if (settingsData) {
-        setShowPause(settingsData.show_pause);
-      }
-    })();
-  });
+  const { showPause } = useShowPause(supabase);
 
   useEffect(() => {
     if (Platform.OS !== 'ios') {

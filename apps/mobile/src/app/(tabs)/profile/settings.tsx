@@ -1,3 +1,4 @@
+import { useShowPause } from '@flowmo/hooks';
 import { useNavigation } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Switch, View } from 'react-native';
@@ -12,7 +13,7 @@ import { supabase } from '@/src/utils/supabase';
 export default function Settings() {
   const navigation = useNavigation();
   const [breakRatio, setBreakRatio] = useState<number | null>(null);
-  const [showPause, setShowPause] = useState<boolean>(false);
+  const { showPause, updateShowPause } = useShowPause(supabase);
 
   useEffect(() => {
     (async () => {
@@ -22,7 +23,6 @@ export default function Settings() {
         .single();
 
       setBreakRatio(settingsData?.break_ratio);
-      setShowPause(settingsData?.show_pause);
     })();
   }, []);
 
@@ -158,27 +158,7 @@ export default function Settings() {
         <Switch
           value={showPause}
           trackColor={{ true: '#DBBFFF' }}
-          onValueChange={async (value) => {
-            setShowPause(value);
-
-            const {
-              data: { user },
-            } = await supabase.auth.getUser();
-
-            if (!user) {
-              console.error('User not found');
-              return;
-            }
-
-            const { error } = await supabase
-              .from('settings')
-              .update({ show_pause: value })
-              .eq('user_id', user.id);
-
-            if (error) {
-              console.error('Error updating show_pause:', error);
-            }
-          }}
+          onValueChange={updateShowPause}
         />
       </View>
     </View>

@@ -12,6 +12,7 @@
     "@expo/vector-icons": "^14.0.4",
     "@flowmo/stores": "workspace:*",
     "@flowmo/task-sources": "workspace:*",
+    "@flowmo/hooks": "workspace:*",
     "@flowmo/utils": "workspace:*",
     "@gorhom/bottom-sheet": "^5.1.1",
     "@notifee/react-native": "^9.1.2",

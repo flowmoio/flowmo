@@ -1,0 +1,11 @@
+{
+  "name": "@flowmo/hooks",
+  "version": "0.1.0",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.47.10",
+    "swr": "^2.3.3"
+  }
+}
