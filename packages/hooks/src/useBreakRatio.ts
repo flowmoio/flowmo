@@ -1,7 +1,10 @@
 import { SupabaseClient } from '@supabase/supabase-js';
 import useSWR from 'swr';
+import { useUser } from './useUser';
 
 export function useBreakRatio(supabase: SupabaseClient) {
+  const { user } = useUser(supabase);
+
   const { data, error, isLoading, mutate } = useSWR(
     'break_ratio',
     async () => {
@@ -21,10 +24,6 @@ export function useBreakRatio(supabase: SupabaseClient) {
   async function updateBreakRatio(newBreakRatio: number) {
     await mutate(
       async () => {
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
-
         if (!user) {
           console.error('User not found');
           return;

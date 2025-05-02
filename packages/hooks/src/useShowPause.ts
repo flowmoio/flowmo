@@ -1,7 +1,10 @@
 import { SupabaseClient } from '@supabase/supabase-js';
 import useSWR from 'swr';
+import { useUser } from './useUser';
 
 export function useShowPause(supabase: SupabaseClient) {
+  const { user } = useUser(supabase);
+
   const { data, error, isLoading, mutate } = useSWR(
     'show_pause',
     async () => {
@@ -21,10 +24,6 @@ export function useShowPause(supabase: SupabaseClient) {
   async function updateShowPause(newShowPause: boolean) {
     await mutate(
       async () => {
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
-
         if (!user) {
           console.error('User not found');
           return;
