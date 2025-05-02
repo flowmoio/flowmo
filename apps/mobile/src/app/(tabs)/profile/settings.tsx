@@ -1,6 +1,6 @@
-import { useShowPause } from '@flowmo/hooks';
+import { useBreakRatio, useShowPause } from '@flowmo/hooks';
 import { useNavigation } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { ActivityIndicator, StyleSheet, Switch, View } from 'react-native';
 import * as DropdownMenu from 'zeego/dropdown-menu';
 import { GoogleTasksButton } from '@/src/components/GoogleTasksButton';
@@ -12,19 +12,8 @@ import { supabase } from '@/src/utils/supabase';
 
 export default function Settings() {
   const navigation = useNavigation();
-  const [breakRatio, setBreakRatio] = useState<number | null>(null);
   const { showPause, updateShowPause } = useShowPause(supabase);
-
-  useEffect(() => {
-    (async () => {
-      const { data: settingsData } = await supabase
-        .from('settings')
-        .select('*')
-        .single();
-
-      setBreakRatio(settingsData?.break_ratio);
-    })();
-  }, []);
+  const { breakRatio, updateBreakRatio } = useBreakRatio(supabase);
 
   useEffect(() => {
     navigation.setOptions({ headerShown: true, title: 'Settings' });
@@ -115,26 +104,7 @@ export default function Settings() {
                 key={`ratio-${num}`}
                 textValue={num.toString()}
                 onSelect={async () => {
-                  setBreakRatio(null);
-
-                  const {
-                    data: { user },
-                  } = await supabase.auth.getUser();
-
-                  if (!user) {
-                    return { error: { message: 'User not found' } };
-                  }
-
-                  const { error } = await supabase
-                    .from('settings')
-                    .update({ break_ratio: num })
-                    .eq('user_id', user.id);
-
-                  setBreakRatio(num);
-
-                  if (error) {
-                    console.error('Error updating break ratio:', error);
-                  }
+                  await updateBreakRatio(num);
                 }}
               >
                 <Text>{num}</Text>
