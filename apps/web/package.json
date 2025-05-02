@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@flowmo/stores": "workspace:*",
+    "@flowmo/hooks": "workspace:*",
     "@flowmo/task-sources": "workspace:*",
     "@flowmo/utils": "workspace:*",
     "@heroui/react": "2.7.8",

@@ -239,6 +239,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@flowmo/hooks':
+        specifier: workspace:*
+        version: link:../../packages/hooks
       '@flowmo/stores':
         specifier: workspace:*
         version: link:../../packages/stores

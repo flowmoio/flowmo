@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import Account from '@/components/Settings/Account';
 import Integrations from '@/components/Settings/Integrations';
-import OptionsWrapper from '@/components/Settings/OptionsWrapper';
+import Options from '@/components/Settings/Options';
 
 export const metadata: Metadata = {
   title: 'Settings | Flowmo',
@@ -13,7 +13,7 @@ export default async function Settings() {
       <h1 className="flex items-center gap-3 text-3xl font-semibold">
         Settings
       </h1>
-      <OptionsWrapper />
+      <Options />
       <Integrations />
       <Account />
     </div>

@@ -16,12 +16,14 @@ export function useBreakRatio(supabase: SupabaseClient) {
       return settingsData?.break_ratio;
     },
     {
-      fallbackData: 5,
       keepPreviousData: true,
     },
   );
 
-  async function updateBreakRatio(newBreakRatio: number) {
+  async function updateBreakRatio(
+    newBreakRatio: number,
+    onSuccess?: () => void,
+  ) {
     await mutate(
       async () => {
         if (!user) {
@@ -36,6 +38,8 @@ export function useBreakRatio(supabase: SupabaseClient) {
 
         if (error) {
           console.error('Error updating break_ratio:', error);
+        } else {
+          onSuccess?.();
         }
       },
       {

@@ -1,58 +1,38 @@
 'use client';
 
-import { Button } from '@heroui/button';
+import { useBreakRatio } from '@flowmo/hooks';
 import { NumberInput } from '@heroui/number-input';
-import { useState, useTransition } from 'react';
 import { toast } from 'sonner';
-import { updateOptions } from '@/actions/settings';
+import supabase from '@/utils/supabase/client';
 
-export default function Options({
-  defaultBreakRatio,
-}: {
-  defaultBreakRatio: number;
-}) {
-  const [breakRatio, setBreakRatio] = useState(defaultBreakRatio);
-  const [isLoading, startTransition] = useTransition();
+export default function Options() {
+  const { breakRatio, updateBreakRatio } = useBreakRatio(supabase);
 
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center gap-3">
         <h2 className="text-xl font-semibold">Options</h2>
       </div>
-      <NumberInput
-        label="Break Ratio"
-        description="Your break time will be your focus time divided by this number."
-        radius="sm"
-        minValue={1}
-        value={breakRatio}
-        onValueChange={setBreakRatio}
-        classNames={{
-          inputWrapper:
-            'bg-secondary max-w-xs data-[hover=true]:bg-secondary data-[focus=true]:!bg-secondary',
-        }}
-      />
-      <div className="flex">
-        <Button
-          color="primary"
+      <div className="flex items-center gap-5">
+        <NumberInput
+          label="Break Ratio"
+          labelPlacement="outside"
+          placeholder=" "
+          description="Your break time will be your focus time divided by this number."
           radius="sm"
-          className="ml-auto mt-2"
-          isDisabled={breakRatio === defaultBreakRatio}
-          isLoading={isLoading}
-          disableRipple
-          onPress={() => {
-            startTransition(async () => {
-              const { error } = await updateOptions(breakRatio);
-
-              if (error) {
-                toast.error(error.message);
-              } else {
-                toast.success('Settings updated successfully!');
-              }
+          minValue={1}
+          value={breakRatio}
+          isWheelDisabled
+          onValueChange={(value) => {
+            updateBreakRatio(value, () => {
+              toast.success('Break ratio updated successfully!');
             });
           }}
-        >
-          Save
-        </Button>
+          classNames={{
+            inputWrapper:
+              'bg-secondary max-w-xs data-[hover=true]:bg-secondary data-[focus=true]:!bg-secondary',
+          }}
+        />
       </div>
     </div>
   );
