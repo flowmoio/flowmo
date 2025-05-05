@@ -1,15 +1,18 @@
 'use client';
 
 import { useBreakRatio } from '@flowmo/hooks';
+import { useShowPause } from '@flowmo/hooks';
 import { NumberInput } from '@heroui/number-input';
+import { Switch } from '@heroui/switch';
 import { toast } from 'sonner';
 import supabase from '@/utils/supabase/client';
 
 export default function Options() {
   const { breakRatio, updateBreakRatio } = useBreakRatio(supabase);
+  const { showPause, updateShowPause } = useShowPause(supabase);
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-6">
       <div className="flex items-center gap-3">
         <h2 className="text-xl font-semibold">Options</h2>
       </div>
@@ -34,6 +37,17 @@ export default function Options() {
           }}
         />
       </div>
+      <Switch
+        size="sm"
+        isSelected={showPause}
+        onValueChange={(selected) => {
+          updateShowPause(selected, () => {
+            toast.success('Show pause setting updated!');
+          });
+        }}
+      >
+        Show pause button
+      </Switch>
     </div>
   );
 }

@@ -18,10 +18,14 @@ export function useShowPause(supabase: SupabaseClient) {
     {
       fallbackData: false,
       keepPreviousData: true,
+      revalidateOnFocus: true,
     },
   );
 
-  async function updateShowPause(newShowPause: boolean) {
+  async function updateShowPause(
+    newShowPause: boolean,
+    onSuccess?: () => void,
+  ) {
     await mutate(
       async () => {
         if (!user) {
@@ -36,6 +40,8 @@ export function useShowPause(supabase: SupabaseClient) {
 
         if (error) {
           console.error('Error updating show_pause:', error);
+        } else {
+          onSuccess?.();
         }
       },
       {

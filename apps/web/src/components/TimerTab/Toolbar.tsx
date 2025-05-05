@@ -1,17 +1,20 @@
 'use client';
 
+import { useShowPause } from '@flowmo/hooks';
 import { Button } from '@heroui/button';
 import { Tooltip } from '@heroui/tooltip';
 import { useTransition } from 'react';
 import { Forward, Hide, Pause, Play, Show, Stop } from '@/components/Icons';
 import { useActiveSource, useFocusingTask } from '@/hooks/useTasks';
 import { useActions, useMode, useShowTime, useStatus } from '@/hooks/useTimer';
+import supabase from '@/utils/supabase/client';
 
 export default function Toolbar() {
   const showTime = useShowTime();
   const status = useStatus();
   const mode = useMode();
   const { start, stop, pause, resume, toggleShowTime } = useActions();
+  const { showPause } = useShowPause(supabase);
   const [isStopLoading, startStopTransition] = useTransition();
   const [isPauseLoading, startPauseTransition] = useTransition();
   const [isSkipLoading, startSkipTransition] = useTransition();
@@ -73,7 +76,9 @@ export default function Toolbar() {
           {status === 'idle' ? <Play /> : <Stop />}
         </Button>
       </Tooltip>
-      {mode === 'focus' && (status === 'running' || status === 'paused') ? (
+      {showPause &&
+      mode === 'focus' &&
+      (status === 'running' || status === 'paused') ? (
         <Tooltip
           radius="sm"
           content={status === 'running' ? 'Pause' : 'Resume'}
