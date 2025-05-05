@@ -2,7 +2,7 @@
 
 import { Tables } from '@flowmo/types';
 import { Card, CardBody } from '@heroui/card';
-import { Skeleton } from '@heroui/react';
+import { Skeleton } from '@heroui/skeleton';
 import useLogs from '@/hooks/useLogs';
 import { calculateStreaks } from '@/utils/stats/calculateStreaks';
 import Heatmap from './Heatmap';
