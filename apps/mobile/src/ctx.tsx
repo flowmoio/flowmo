@@ -120,7 +120,9 @@ export function SessionProvider({ children }: PropsWithChildren) {
           } catch (error) {}
         },
         signOut: async () => {
-          const { error } = await supabase.auth.signOut();
+          const { error } = await supabase.auth.signOut({
+            scope: 'local',
+          });
           return error;
         },
         signUp: async (email, password) => {

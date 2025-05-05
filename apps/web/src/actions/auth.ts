@@ -80,7 +80,10 @@ export async function signUp(formData: FormData) {
 
 export async function signOut() {
   const supabase = await createClient();
-  const { error } = await supabase.auth.signOut();
+  const { error } = await supabase.auth.signOut({
+    scope: 'local',
+  });
+
   if (error) {
     console.error('Error signing out:', error);
   }
