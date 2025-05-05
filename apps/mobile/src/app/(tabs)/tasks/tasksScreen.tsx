@@ -122,7 +122,7 @@ export default function TasksScreen() {
               setNewTaskName('');
             }
           }}
-          blurOnSubmit={false}
+          submitBehavior="submit"
           placeholder="Add a new task"
           autoCapitalize="none"
           placeholderTextColor="#888"
