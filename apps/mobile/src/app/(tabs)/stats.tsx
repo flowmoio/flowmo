@@ -139,13 +139,6 @@ export default function Stats() {
 }
 
 const styles = StyleSheet.create({
-  weekHeader: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 8,
-    alignItems: 'center',
-    width: '100%',
-  },
   dayButton: {
     backgroundColor: '#3F3E55',
     width: 46,

@@ -75,17 +75,6 @@ export default function ScheduleChart() {
 }
 
 const styles = StyleSheet.create({
-  header: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    width: '100%',
-  },
-  displayTime: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-  },
   scrollView: {
     flex: 1,
     paddingHorizontal: 20,
