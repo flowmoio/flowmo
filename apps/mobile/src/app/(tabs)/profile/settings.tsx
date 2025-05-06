@@ -157,7 +157,8 @@ export default function Settings() {
         </Text>
         <Switch
           value={showPause}
-          trackColor={{ true: '#DBBFFF' }}
+          trackColor={{ true: '#DBBFFF', false: '#3F3E55' }}
+          thumbColor="white"
           onValueChange={updateShowPause}
         />
       </View>
