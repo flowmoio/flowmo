@@ -1,4 +1,4 @@
-import { useFocusEffect } from 'expo-router';
+import { LogsWithTasks } from '@flowmo/types';
 import {
   Dimensions,
   Pressable,
@@ -9,14 +9,42 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import ScheduleChart from '@/src/components/ScheduleChart';
 import { Text } from '@/src/components/Themed';
-import { useStartDate, useStatsActions } from '@/src/hooks/useStats';
+import TimeFormatter from '@/src/components/TimeFormatter';
+import { useLogs, useStartDate, useStatsActions } from '@/src/hooks/useStats';
+
+function calculateFocusTime(sessions: LogsWithTasks[]): {
+  totalFocusTime: number;
+  longestFocusTime: number;
+} {
+  let totalFocusTime = 0; // in minutes
+  let longestFocusTime = 0; // in minutes
+
+  for (const session of sessions) {
+    const start = new Date(session.start_time);
+    const end = new Date(session.end_time);
+    const duration = (end.getTime() - start.getTime()) / 60000;
+
+    totalFocusTime += duration;
+
+    if (duration > longestFocusTime) {
+      longestFocusTime = duration;
+    }
+  }
+
+  return {
+    totalFocusTime,
+    longestFocusTime,
+  };
+}
 
 const screenWidth = Dimensions.get('window').width;
 
 export default function Stats() {
   const insets = useSafeAreaInsets();
   const selectedDate = useStartDate();
-  const { updateLogs, setDate } = useStatsActions();
+  const logs = useLogs();
+  const { totalFocusTime, longestFocusTime } = calculateFocusTime(logs ?? []);
+  const { setDate } = useStatsActions();
   const getWeekDaysFor = (offset: number) => {
     const baseDate = new Date();
     return Array.from({ length: 7 }, (_, i) => {
@@ -27,10 +55,6 @@ export default function Stats() {
   };
 
   const weeks = [-4, -3, -2, -1, 0];
-
-  useFocusEffect(() => {
-    updateLogs();
-  });
 
   return (
     <View
@@ -91,6 +115,24 @@ export default function Stats() {
           ))}
         </ScrollView>
       </View>
+      <View style={styles.statsContainer}>
+        <View
+          style={{
+            alignItems: 'center',
+          }}
+        >
+          <Text>Total Focus</Text>
+          <TimeFormatter minutes={totalFocusTime} />
+        </View>
+        <View
+          style={{
+            alignItems: 'center',
+          }}
+        >
+          <Text>Longest Focus</Text>
+          <TimeFormatter minutes={longestFocusTime} />
+        </View>
+      </View>
       <ScheduleChart />
     </View>
   );
@@ -140,5 +182,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     alignItems: 'center',
     width: screenWidth,
+  },
+  statsContainer: {
+    borderRadius: 12,
+    display: 'flex',
+    flexDirection: 'row',
+    gap: 42,
+    justifyContent: 'center',
+    marginHorizontal: 20,
   },
 });

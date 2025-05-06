@@ -11,6 +11,7 @@ import {
 } from '@/modules/activity-controller';
 import TaskSelector from '@/src/components/TaskSelector';
 import { Pressable, Text } from '@/src/components/Themed';
+import { useStatsActions } from '@/src/hooks/useStats';
 import { useActiveSource, useFocusingTask } from '@/src/hooks/useTasks';
 import {
   useActions,
@@ -33,6 +34,7 @@ export default function TimerTab() {
   const status = useStatus();
   const [isLoading, setIsLoading] = useState(false);
   const { start, stop, pause, resume } = useActions();
+  const { updateLogs } = useStatsActions();
 
   const focusingTask = useFocusingTask();
   const activeSource = useActiveSource();
