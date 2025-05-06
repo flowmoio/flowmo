@@ -102,6 +102,7 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   hourRow: {
+    position: 'relative',
     flexDirection: 'row',
     alignItems: 'flex-start',
     height: HOUR_HEIGHT,
@@ -109,7 +110,8 @@ const styles = StyleSheet.create({
   hourText: {
     width: 50,
     fontSize: 12,
-    transform: [{ translateY: -6 }],
+    fontWeight: 600,
+    bottom: 6,
     color: '#FFFFFF',
   },
   hourLine: {
