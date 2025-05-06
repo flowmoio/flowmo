@@ -1,8 +1,8 @@
 import { LogsWithTasks } from '@flowmo/types';
 import {
   Dimensions,
+  FlatList,
   Pressable,
-  ScrollView,
   StyleSheet,
   View,
 } from 'react-native';
@@ -54,7 +54,7 @@ export default function Stats() {
     });
   };
 
-  const weeks = [-4, -3, -2, -1, 0];
+  const weeks = Array.from({ length: 52 }, (_, i) => i - 51);
 
   return (
     <View
@@ -67,15 +67,28 @@ export default function Stats() {
       }}
     >
       <View>
-        <ScrollView
+        <FlatList
           horizontal
           pagingEnabled
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.weekHeaderContainer}
-          contentOffset={{ x: screenWidth * 4, y: 0 }}
-        >
-          {weeks.map((offset) => (
-            <View style={styles.weekPage} key={offset.toString()}>
+          data={weeks}
+          initialScrollIndex={51}
+          getItemLayout={(_, index) => ({
+            length: screenWidth,
+            offset: screenWidth * index,
+            index,
+          })}
+          keyExtractor={(item) => item.toString()}
+          onMomentumScrollEnd={({ nativeEvent }) => {
+            const newIndex = Math.round(nativeEvent.contentOffset.x / screenWidth);
+            const newOffset = weeks[newIndex];
+            const days = getWeekDaysFor(newOffset);
+            const lastDay = days[days.length - 1];
+            setDate(lastDay);
+          }}
+          renderItem={({ item: offset }) => (
+            <View style={styles.weekPage}>
               {getWeekDaysFor(offset).map((day) => (
                 <Pressable
                   key={day.toISOString()}
@@ -112,8 +125,8 @@ export default function Stats() {
                 </Pressable>
               ))}
             </View>
-          ))}
-        </ScrollView>
+          )}
+        />
       </View>
       <View style={styles.statsContainer}>
         <View
