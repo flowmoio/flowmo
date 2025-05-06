@@ -52,7 +52,7 @@ export default function TasksScreen() {
         }}
       >
         {isLoadingTasks ? (
-          <ActivityIndicator />
+          <ActivityIndicator color="white" />
         ) : tasks.length === 0 ? (
           <View
             style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}

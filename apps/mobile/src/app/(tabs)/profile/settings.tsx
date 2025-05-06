@@ -113,6 +113,7 @@ export default function Settings() {
                 </View>
               ) : (
                 <ActivityIndicator
+                  color="white"
                   style={{
                     width: 32,
                     height: 38,

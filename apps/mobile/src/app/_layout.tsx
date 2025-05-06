@@ -3,9 +3,9 @@ import { Stack } from 'expo-router/stack';
 import { useEffect } from 'react';
 import { ActivityIndicator, Pressable, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { SessionProvider, useSession } from '@/src/ctx';
 import BottomSheetComponent from '../components/BottomSheetComponent';
-import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { Text } from '../components/Themed';
 import { BottomSheetProvider } from '../context/BottomSheetContext';
 
@@ -36,7 +36,7 @@ function RootStack() {
           backgroundColor: '#131221',
         }}
       >
-        <ActivityIndicator />
+        <ActivityIndicator color="white" />
       </View>
     );
   }
@@ -82,10 +82,10 @@ export default function Layout() {
     <SessionProvider>
       <KeyboardProvider>
         <GestureHandlerRootView style={{ flex: 1 }}>
-        <BottomSheetProvider>
-          <RootStack />
-          <BottomSheetComponent />
-        </BottomSheetProvider>
+          <BottomSheetProvider>
+            <RootStack />
+            <BottomSheetComponent />
+          </BottomSheetProvider>
         </GestureHandlerRootView>
       </KeyboardProvider>
     </SessionProvider>

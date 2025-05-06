@@ -117,7 +117,7 @@ export function IntegrationButton({
       onPress={handlePress}
     >
       {isLoading ? (
-        <ActivityIndicator style={{ width: 24, height: 24 }} />
+        <ActivityIndicator style={{ width: 24, height: 24 }} color="white" />
       ) : (
         <Image
           source={imageSrc}
