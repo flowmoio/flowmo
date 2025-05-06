@@ -22,11 +22,28 @@ export default function ScheduleChart() {
   const logs = useLogs() ?? [];
   const hours = Array.from({ length: 25 }, (_, i) => i);
 
+  const offsetY =
+    logs.length > 0
+      ? (parseFloat(
+          getLogPosition(
+            logs.reduce(
+              (earliest, log) =>
+                new Date(log.start_time) < new Date(earliest.start_time)
+                  ? log
+                  : earliest,
+              logs[0],
+            ),
+          ).start,
+        ) /
+          100) *
+        (24 * HOUR_HEIGHT)
+      : 8 * HOUR_HEIGHT;
+
   return (
     <ScrollView
       style={styles.scrollView}
       showsVerticalScrollIndicator={false}
-      contentOffset={{ y: (24 * HOUR_HEIGHT) / 3 }}
+      contentOffset={{ x: 0, y: offsetY }}
     >
       <View style={styles.chart}>
         {hours.map((hour) => (
