@@ -1,7 +1,7 @@
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { useShowPause } from '@flowmo/hooks';
 import notifee from '@notifee/react-native';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import {
@@ -11,7 +11,6 @@ import {
 } from '@/modules/activity-controller';
 import TaskSelector from '@/src/components/TaskSelector';
 import { Pressable, Text } from '@/src/components/Themed';
-import { useStatsActions } from '@/src/hooks/useStats';
 import { useActiveSource, useFocusingTask } from '@/src/hooks/useTasks';
 import {
   useActions,
@@ -32,9 +31,7 @@ export default function TimerTab() {
   const displayTime = useDisplayTime();
   const mode = useMode();
   const status = useStatus();
-  const [isLoading, setIsLoading] = useState(false);
   const { start, stop, pause, resume } = useActions();
-  const { updateLogs } = useStatsActions();
 
   const focusingTask = useFocusingTask();
   const activeSource = useActiveSource();
@@ -105,18 +102,15 @@ export default function TimerTab() {
             (status === 'running' || status === 'paused') && (
               <Pressable
                 scaleValue={0.9}
-                isLoading={isLoading}
                 color="#FFFFFF"
                 haptics
                 style={styles.button}
-                onPress={async () => {
-                  setIsLoading(true);
+                onPress={() => {
                   if (status === 'running') {
-                    await pause(Platform.OS, focusingTask, activeSource);
+                    pause(Platform.OS, focusingTask, activeSource);
                   } else {
-                    await resume();
+                    resume();
                   }
-                  setIsLoading(false);
                 }}
               >
                 {status === 'running' ? (
@@ -128,23 +122,20 @@ export default function TimerTab() {
             )}
           <Pressable
             scaleValue={0.9}
-            isLoading={isLoading}
             color="#FFFFFF"
             haptics
             style={styles.button}
             onPress={async () => {
-              setIsLoading(true);
               if (status !== 'idle') {
                 if (mode === 'break') {
                   const ids = await notifee.getTriggerNotificationIds();
                   notifee.cancelTriggerNotifications(ids);
                 }
 
-                await stop(Platform.OS, focusingTask, activeSource);
+                stop(Platform.OS, focusingTask, activeSource);
               } else {
-                await start();
+                start();
               }
-              setIsLoading(false);
             }}
           >
             {status === 'idle' ? (

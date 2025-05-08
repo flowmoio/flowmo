@@ -3,7 +3,6 @@
 import { useShowPause } from '@flowmo/hooks';
 import { Button } from '@heroui/button';
 import { Tooltip } from '@heroui/tooltip';
-import { useTransition } from 'react';
 import { Forward, Hide, Pause, Play, Show, Stop } from '@/components/Icons';
 import { useActiveSource, useFocusingTask } from '@/hooks/useTasks';
 import { useActions, useMode, useShowTime, useStatus } from '@/hooks/useTimer';
@@ -15,9 +14,6 @@ export default function Toolbar() {
   const mode = useMode();
   const { start, stop, pause, resume, toggleShowTime } = useActions();
   const { showPause } = useShowPause(supabase);
-  const [isStopLoading, startStopTransition] = useTransition();
-  const [isPauseLoading, startPauseTransition] = useTransition();
-  const [isSkipLoading, startSkipTransition] = useTransition();
   const focusingTask = useFocusingTask();
   const activeSource = useActiveSource();
 
@@ -57,20 +53,16 @@ export default function Toolbar() {
           type="button"
           radius="lg"
           variant="flat"
-          isLoading={isStopLoading}
-          isDisabled={isPauseLoading}
           isIconOnly
           disableRipple
           aria-label={status === 'idle' ? 'Start' : 'Stop'}
           className="h-12 w-12 bg-secondary"
           onPress={() => {
-            startStopTransition(async () => {
-              if (status !== 'idle') {
-                await stop('web', focusingTask, activeSource);
-              } else {
-                await start();
-              }
-            });
+            if (status !== 'idle') {
+              stop('web', focusingTask, activeSource);
+            } else {
+              start();
+            }
           }}
         >
           {status === 'idle' ? <Play /> : <Stop />}
@@ -89,20 +81,16 @@ export default function Toolbar() {
             type="button"
             variant="flat"
             radius="lg"
-            isLoading={isPauseLoading}
-            isDisabled={isStopLoading}
             isIconOnly
             disableRipple
             aria-label={status === 'running' ? 'Pause' : 'Resume'}
             className="h-12 w-12 bg-secondary"
             onPress={() => {
-              startPauseTransition(async () => {
-                if (status === 'running') {
-                  await pause('web', focusingTask, activeSource);
-                } else {
-                  await resume();
-                }
-              });
+              if (status === 'running') {
+                pause('web', focusingTask, activeSource);
+              } else {
+                resume();
+              }
             }}
           >
             {status === 'running' ? <Pause /> : <Play />}
@@ -120,16 +108,12 @@ export default function Toolbar() {
             type="button"
             variant="flat"
             radius="lg"
-            isLoading={isSkipLoading}
-            isDisabled={isStopLoading || isPauseLoading}
             isIconOnly
             disableRipple
             aria-label="Skip break"
             className="h-12 w-12 bg-secondary"
             onPress={() => {
-              startSkipTransition(async () => {
-                await stop('web', focusingTask, activeSource);
-              });
+              stop('web', focusingTask, activeSource);
             }}
           >
             <Forward />

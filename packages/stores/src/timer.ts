@@ -103,8 +103,9 @@ export const createStore = (
         }
 
         if (get().mode !== 'break' && platform) {
-          await get().actions.log(platform, focusingTask, activeSource);
+          get().actions.log(platform, focusingTask, activeSource);
         }
+
         set((state) => {
           const totalTime =
             state.mode === 'focus'
