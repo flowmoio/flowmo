@@ -168,6 +168,7 @@ const styles = StyleSheet.create({
   time: {
     fontSize: 48,
     fontWeight: 'bold',
+    fontVariant: ['tabular-nums'],
   },
   mode: {
     fontSize: 30,
