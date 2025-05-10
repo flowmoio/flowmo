@@ -1,5 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
-import { Link } from 'expo-router';
+import { Link, useNavigation } from 'expo-router';
 import { useEffect } from 'react';
 import { Alert, Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
