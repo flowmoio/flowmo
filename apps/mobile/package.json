@@ -10,9 +10,9 @@
   "dependencies": {
     "@bacons/apple-targets": "^0.2.1",
     "@expo/vector-icons": "^14.0.4",
+    "@flowmo/hooks": "workspace:*",
     "@flowmo/stores": "workspace:*",
     "@flowmo/task-sources": "workspace:*",
-    "@flowmo/hooks": "workspace:*",
     "@flowmo/utils": "workspace:*",
     "@gorhom/bottom-sheet": "^5.1.1",
     "@notifee/react-native": "^9.1.2",
@@ -31,6 +31,7 @@
     "expo-notifications": "~0.29.13",
     "expo-router": "~4.0.17",
     "expo-splash-screen": "~0.29.22",
+    "expo-system-ui": "~4.0.9",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-native": "0.76.7",
