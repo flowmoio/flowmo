@@ -27,3 +27,7 @@ Flowmo addresses this by offering flexibility: **work x minutes, take x/5 minute
 ## Development and Contributing
 
 Please read [CONTRIBUTING.md](https://github.com/flowmoio/flowmo/blob/main/CONTRIBUTING.md).
+
+## Star History
+
+[![Star History Chart](https://app.repohistory.com/api/svg?repo=flowmoio/flowmo&type=Date&theme=dark&transparent=false&color=DBBFFF)](https://repohistory.com)
