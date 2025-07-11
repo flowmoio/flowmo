@@ -30,4 +30,4 @@ Please read [CONTRIBUTING.md](https://github.com/flowmoio/flowmo/blob/main/CONTR
 
 ## Star History
 
-[![Star History Chart](https://app.repohistory.com/api/svg?repo=flowmoio/flowmo&type=Date&theme=dark&transparent=false&color=DBBFFF)](https://repohistory.com)
+[![Star History Chart](https://app.repohistory.com/api/svg?repo=flowmoio/flowmo&type=Date&theme=dark&transparent=false&color=DBBFFF)](https://app.repohistory.com/star-history)
