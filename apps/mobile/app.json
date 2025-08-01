@@ -18,7 +18,6 @@
       }
     },
     "android": {
-      "targetSdkVersion": 35,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#131221"
@@ -58,7 +57,17 @@
       ],
       "./plugins/notifee-mod.js",
       "expo-font",
-      "@bacons/apple-targets"
+      "@bacons/apple-targets",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 35,
+            "targetSdkVersion": 35,
+            "buildToolsVersion": "35.0.0"
+          },
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
