@@ -107,7 +107,6 @@ export const createStore = (
       stop: async (platform, focusingTask, activeSource) => {
         const breakRatio = await getBreakRatio(supabase);
         const autoStartBreak = await getAutoStartBreak(supabase);
-        const currentMode = get().mode;
 
         if (get().status === 'paused') {
           const totalTime = Math.round(get().totalTime / breakRatio);
@@ -117,6 +116,10 @@ export const createStore = (
             mode: state.mode === 'focus' ? 'break' : 'focus',
             status: 'idle',
           }));
+
+          if (get().mode === 'break' && autoStartBreak) {
+            await get().actions.start();
+          }
           return;
         }
 
@@ -140,7 +143,7 @@ export const createStore = (
           };
         });
 
-        if (currentMode === 'focus' && autoStartBreak && get().totalTime > 0) {
+        if (get().mode === 'break' && autoStartBreak) {
           await get().actions.start();
         }
       },
