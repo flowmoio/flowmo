@@ -2,6 +2,7 @@
 
 import { useBreakRatio } from '@flowmo/hooks';
 import { useShowPause } from '@flowmo/hooks';
+import { useAutoStartBreak } from '@flowmo/hooks';
 import { NumberInput } from '@heroui/number-input';
 import { Switch } from '@heroui/switch';
 import { toast } from 'sonner';
@@ -10,6 +11,7 @@ import supabase from '@/utils/supabase/client';
 export default function Options() {
   const { breakRatio, updateBreakRatio } = useBreakRatio(supabase);
   const { showPause, updateShowPause } = useShowPause(supabase);
+  const { autoStartBreak, updateAutoStartBreak } = useAutoStartBreak(supabase);
 
   return (
     <div className="flex flex-col gap-6">
@@ -47,6 +49,17 @@ export default function Options() {
         }}
       >
         Show pause button
+      </Switch>
+      <Switch
+        size="sm"
+        isSelected={autoStartBreak}
+        onValueChange={(selected) => {
+          updateAutoStartBreak(selected, () => {
+            toast.success('Auto start break setting updated!');
+          });
+        }}
+      >
+        Auto start break session
       </Switch>
     </div>
   );

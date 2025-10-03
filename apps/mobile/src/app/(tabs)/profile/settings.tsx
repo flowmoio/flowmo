@@ -1,4 +1,4 @@
-import { useBreakRatio, useShowPause } from '@flowmo/hooks';
+import { useBreakRatio, useShowPause, useAutoStartBreak } from '@flowmo/hooks';
 import { Source } from '@flowmo/task-sources';
 import { useNavigation } from 'expo-router';
 import { useEffect } from 'react';
@@ -12,6 +12,7 @@ export default function Settings() {
   const navigation = useNavigation();
   const { showPause, updateShowPause } = useShowPause(supabase);
   const { breakRatio, updateBreakRatio } = useBreakRatio(supabase);
+  const { autoStartBreak, updateAutoStartBreak } = useAutoStartBreak(supabase);
 
   useEffect(() => {
     navigation.setOptions({ headerShown: true, title: 'Settings' });
@@ -160,6 +161,25 @@ export default function Settings() {
           trackColor={{ true: '#DBBFFF', false: '#3F3E55' }}
           thumbColor="white"
           onValueChange={updateShowPause}
+        />
+      </View>
+      <View
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 6,
+          marginTop: 10,
+        }}
+      >
+        <Text style={{ fontSize: 15.5, fontWeight: 600 }}>
+          Auto start break session:
+        </Text>
+        <Switch
+          value={autoStartBreak}
+          trackColor={{ true: '#DBBFFF', false: '#3F3E55' }}
+          thumbColor="white"
+          onValueChange={updateAutoStartBreak}
         />
       </View>
     </View>

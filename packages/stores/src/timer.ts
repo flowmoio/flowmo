@@ -58,6 +58,22 @@ async function getBreakRatio(supabase: SupabaseClient) {
   return data?.break_ratio || 5;
 }
 
+async function getAutoStartBreak(supabase: SupabaseClient) {
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session) {
+    return false;
+  }
+
+  const { data } = await supabase
+    .from('settings')
+    .select('auto_start_break')
+    .single();
+  return data?.auto_start_break || false;
+}
+
 export const createStore = (
   supabase: SupabaseClient,
   statsStore: ReturnType<typeof createStatsStore>,
@@ -90,6 +106,8 @@ export const createStore = (
       },
       stop: async (platform, focusingTask, activeSource) => {
         const breakRatio = await getBreakRatio(supabase);
+        const autoStartBreak = await getAutoStartBreak(supabase);
+        const currentMode = get().mode;
 
         if (get().status === 'paused') {
           const totalTime = Math.round(get().totalTime / breakRatio);
@@ -121,6 +139,10 @@ export const createStore = (
             status: 'idle',
           };
         });
+
+        if (currentMode === 'focus' && autoStartBreak && get().totalTime > 0) {
+          await get().actions.start();
+        }
       },
       pause: async (platform, focusingTask, activeSource) => {
         if (get().mode !== 'break' && platform) {
