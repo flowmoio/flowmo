@@ -167,6 +167,9 @@ export const createStore = (
         }));
       },
       log: async (platform, focusingTask, activeSource) => {
+        const start_time = new Date(get().startTime).toISOString();
+        const end_time = new Date(Date.now()).toISOString();
+
         const {
           data: { session },
         } = await supabase.auth.getSession();
@@ -174,9 +177,6 @@ export const createStore = (
         if (!session) {
           return;
         }
-
-        const start_time = new Date(get().startTime).toISOString();
-        const end_time = new Date(Date.now()).toISOString();
 
         if (!focusingTask) {
           await supabase.from('logs').insert([
